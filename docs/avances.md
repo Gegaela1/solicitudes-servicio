@@ -44,3 +44,5 @@ RF-17 — cerrar duplicados manualmente sin perder historial ni exponer otros pr
 RF-18 — configurar plazos por servicio sin alterar casos existentes. Suite ejecutada con resultado aprobado (evidencias/RF-18.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-07 — consultar consolidado con filtros coherentes y metricas por ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-07.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-19 — notificar acciones dentro de la transaccion y marcar avisos propios. Suite ejecutada con resultado aprobado (evidencias/RF-19.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

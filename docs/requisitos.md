@@ -246,3 +246,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-07 — consultar consolidado con filtros coherentes y metricas por ciclo
 AC-RF-07-01: Coordinación combina filtros con fechas Colombia inclusivas; conteos listado y métricas coinciden; solo ciclos finalizados integran el promedio.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-19 — notificar acciones dentro de la transaccion y marcar avisos propios
+AC-RF-19-01: Acciones generan avisos internos atómicos; cada cuenta lista y marca únicamente sus notificaciones sin revelar contenido privado.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

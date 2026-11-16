@@ -529,3 +529,17 @@ def test_report_filtered_counts_and_dates(client):
     assert r.json()["promedio_resolucion_horas"] is not None
     r = client.get("/api/v1/reportes/solicitudes?estado=registrada", headers=co)
     assert r.json()["total"] == 1 and r.json()["promedio_resolucion_horas"] is None
+
+
+def test_notifications_are_personal(client):
+    add_user()
+    h = auth(client)
+    create_case(client, h)
+    add_user("otro@example.com")
+    other = auth(client, "otro@example.com")
+    data = client.get("/api/v1/notificaciones", headers=h).json()
+    assert data["total"] == 1
+    nid = data["items"][0]["id"]
+    assert client.patch(f"/api/v1/notificaciones/{nid}/lectura", headers=other).status_code == 404
+    assert client.get("/api/v1/notificaciones", headers=other).json()["total"] == 0
+    assert client.patch(f"/api/v1/notificaciones/{nid}/lectura", headers=h).json()["leida_en"]
