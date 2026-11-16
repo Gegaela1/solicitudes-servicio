@@ -238,3 +238,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-17 — cerrar duplicados manualmente sin perder historial ni exponer otros propietarios
 AC-RF-17-01: Solo casos activos se vinculan a un original distinto del mismo propietario; se impiden ciclos y se cierran requerimientos pendientes.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-18 — configurar plazos por servicio sin alterar casos existentes
+AC-RF-18-01: Solo coordinación configura prioridad y plazo opcional 1–8760; los casos copian valores y calculan vencimiento por ciclo sin pausar esperas.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

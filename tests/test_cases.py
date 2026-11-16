@@ -475,3 +475,39 @@ def test_duplicates_preserve_history_and_close_question(client):
         == 422
     )
     assert client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h).json()["total"] >= 4
+
+
+def test_service_snapshots_deadline(client):
+    from datetime import timedelta
+    from app.models.entities import Ciclo
+    from app.db.session import utcnow
+
+    add_user()
+    h = auth(client)
+    add_user("coord@example.com", ("coordinacion",))
+    co = auth(client, "coord@example.com")
+    old = create_case(client, h)
+    assert old["vencimiento"] is None
+    assert (
+        client.patch(
+            "/api/v1/servicios/1/configuracion",
+            headers=co,
+            json={"prioridad": "alta", "plazo_horas": 0},
+        ).status_code
+        == 422
+    )
+    assert (
+        client.patch(
+            "/api/v1/servicios/1/configuracion",
+            headers=co,
+            json={"prioridad": "alta", "plazo_horas": 24},
+        ).status_code
+        == 200
+    )
+    c = create_case(client, h)
+    assert c["prioridad"] == "alta" and c["vencimiento"]
+    assert client.get(f"/api/v1/solicitudes/{old['id']}", headers=h).json()["plazo_horas"] is None
+    with SessionLocal.begin() as db:
+        cycle = db.scalar(select(Ciclo).where(Ciclo.solicitud_id == c["id"]))
+        cycle.inicio = utcnow() - timedelta(hours=25)
+    assert client.get(f"/api/v1/solicitudes/{c['id']}", headers=h).json()["vencida"] is True
