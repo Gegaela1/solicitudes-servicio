@@ -86,3 +86,8 @@ class ReopenDecision(Motive):
 
 class Duplicate(Motive):
     original_id: int = Field(gt=0)
+
+
+class ServiceConfig(Input):
+    prioridad: Priority
+    plazo_horas: int | None = Field(default=None, ge=1, le=8760, strict=True)

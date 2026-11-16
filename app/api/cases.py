@@ -1,3 +1,4 @@
+from app.schemas.cases import ServiceConfig
 from app.schemas.cases import Correction
 from app.services.cases import ACTIVE
 from app.services.cases import state, iso
@@ -121,3 +122,22 @@ def correct(sid: int, data: Correction, user=Depends(current_user), db: Session 
     event(db, case, user, "correccion", "Datos de la solicitud corregidos")
     db.commit()
     return case_output(db, case)
+
+
+@router.patch("/servicios/{sid}/configuracion")
+def configure_service(
+    sid: int, data: ServiceConfig, user=Depends(current_user), db: Session = Depends(get_db)
+):
+    require_roles(user, "coordinacion")
+    service = db.get(Servicio, sid)
+    if not service:
+        raise HTTPException(404, "Servicio no encontrado")
+    service.prioridad = data.prioridad
+    service.plazo_horas = data.plazo_horas
+    db.commit()
+    return {
+        "id": service.id,
+        "nombre": service.nombre,
+        "prioridad": service.prioridad,
+        "plazo_horas": service.plazo_horas,
+    }
