@@ -123,3 +123,81 @@ def test_review_states_and_stale_version(client):
         ).json()["estado"]
         == "rechazada"
     )
+
+
+def advance(client, h, c, action, data=None, method="post"):
+    r = getattr(client, method)(
+        f"/api/v1/solicitudes/{c['id']}/{action}",
+        headers=h,
+        json={"version": c["version"], **(data or {})},
+    )
+    assert r.status_code == 200, r.text
+    return r.json()
+
+
+def prepared(client):
+    add_user()
+    h = auth(client)
+    cid = add_user("coord@example.com", ("coordinacion",))
+    co = auth(client, "coord@example.com")
+    aid = add_user("staff@example.com", ("atencion",))
+    staff = auth(client, "staff@example.com")
+    c = create_case(client, h)
+    c = advance(client, staff, c, "revision")
+    c = advance(client, staff, c, "aceptacion")
+    return h, co, staff, c, cid, aid
+
+
+def test_assign_and_active_responsible(client):
+    h, co, staff, c, cid, aid = prepared(client)
+    path = f"/api/v1/solicitudes/{c['id']}/responsable"
+    assert (
+        client.put(
+            path,
+            headers=staff,
+            json={
+                "version": c["version"],
+                "responsable_id": aid,
+                "motivo": "Asignación inicial válida",
+            },
+        ).status_code
+        == 403
+    )
+    assert (
+        client.put(
+            path,
+            headers=co,
+            json={
+                "version": c["version"],
+                "responsable_id": 9999,
+                "motivo": "Asignación inicial válida",
+            },
+        ).status_code
+        == 422
+    )
+    c = advance(
+        client,
+        co,
+        c,
+        "responsable",
+        {"responsable_id": aid, "motivo": "Asignación inicial válida"},
+        "put",
+    )
+    assert c["estado"] == "asignada"
+    assert (
+        client.put(
+            f"/api/v1/usuarios/{aid}/roles",
+            headers=co,
+            json={"roles": ["solicitante"], "activo": True},
+        ).status_code
+        == 409
+    )
+    c = advance(
+        client,
+        co,
+        c,
+        "responsable",
+        {"responsable_id": cid, "motivo": "Cambio por disponibilidad"},
+        "put",
+    )
+    assert c["estado"] == "asignada" and c["responsable_id"] == cid

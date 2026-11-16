@@ -1,3 +1,8 @@
+from fastapi import HTTPException
+from app.models.entities import Usuario
+from app.api.deps import roles
+from app.services.cases import ACTIVE
+from app.schemas.cases import Assign
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.api.deps import current_user
@@ -43,5 +48,42 @@ def reject(sid: int, data: Motive, user=Depends(current_user), db: Session = Dep
     state(case, "en_revision")
     current_cycle(db, case).fin = utcnow()
     transition(db, case, user, "rechazada", "rechazo", data.motivo)
+    db.commit()
+    return case_output(db, case)
+
+
+@router.put("/{sid}/responsable")
+def assign(sid: int, data: Assign, user=Depends(current_user), db: Session = Depends(get_db)):
+    require_roles(user, "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, *ACTIVE)
+    if not case.responsable_id:
+        state(case, "aceptada")
+    target = db.get(Usuario, data.responsable_id)
+    if (
+        not target
+        or not target.activo
+        or not roles(target).intersection({"atencion", "coordinacion"})
+    ):
+        raise HTTPException(422, "Responsable no elegible")
+    if case.responsable_id == target.id:
+        raise HTTPException(409, "La persona ya es responsable")
+    previous = case.responsable_id
+    before = case.estado
+    case.responsable_id = target.id
+    if previous is None:
+        case.estado = "asignada"
+    event(
+        db,
+        case,
+        user,
+        "asignacion",
+        data.motivo,
+        internal=True,
+        before=before,
+        changes={"responsable_anterior": previous, "responsable_nuevo": target.id},
+    )
+    if before != case.estado:
+        event(db, case, user, "estado", "Responsable asignado; solicitud asignada", before=before)
     db.commit()
     return case_output(db, case)

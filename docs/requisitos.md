@@ -206,3 +206,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-02 — revisar aceptar o rechazar mediante transiciones autorizadas
 AC-RF-02-01: Solo atención o coordinación revisan y evalúan; rechazo exige motivo; estado o versión incorrecta produce 409.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-12 — asignar y reasignar responsables elegibles con auditoria
+AC-RF-12-01: Solo coordinación asigna personal activo; reasignación conserva estado y registra antes/después; no se deshabilita personal con casos activos.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

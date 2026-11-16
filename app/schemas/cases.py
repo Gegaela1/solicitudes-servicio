@@ -56,3 +56,7 @@ class Note(Action):
 
 class Motive(Action):
     motivo: Reason
+
+
+class Assign(Motive):
+    responsable_id: int = Field(gt=0)
