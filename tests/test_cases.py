@@ -375,3 +375,51 @@ def test_cancel_before_review_only(client):
         ).status_code
         == 409
     )
+
+
+def test_reopen_preserves_finalized_cycle(client):
+    h, co, staff, c, cid, aid = finalized(client)
+    rad = c["radicado"]
+    r = client.post(
+        f"/api/v1/solicitudes/{c['id']}/reaperturas",
+        headers=h,
+        json={"version": c["version"], "motivo": "La respuesta requiere una aclaración adicional"},
+    )
+    assert r.status_code == 201 and r.json()["estado"] == "finalizada"
+    c = r.json()
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{c['id']}/reaperturas",
+            headers=h,
+            json={"version": c["version"], "motivo": "Otra solicitud de reapertura"},
+        ).status_code
+        == 409
+    )
+    req = client.get(f"/api/v1/solicitudes/{c['id']}/reaperturas", headers=co).json()["items"][0]
+    r = client.post(
+        f"/api/v1/reaperturas/{req['id']}/decision",
+        headers=co,
+        json={
+            "version": c["version"],
+            "aprobar": True,
+            "motivo": "Se aprueba estudiar la información adicional",
+        },
+    )
+    assert r.status_code == 200, r.text
+    c = r.json()
+    assert c["estado"] == "en_revision" and c["radicado"] == rad and c["responsable_id"] is None
+    from app.models.entities import Ciclo
+
+    with SessionLocal() as db:
+        cycles = list(
+            db.scalars(select(Ciclo).where(Ciclo.solicitud_id == c["id"]).order_by(Ciclo.numero))
+        )
+        assert (
+            len(cycles) == 2
+            and cycles[0].respuesta
+            and cycles[0].resuelto
+            and cycles[1].fin is None
+        )
+        assert db.get(Solicitud, c["id"]).respuesta_final is None
+    history = client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h).text
+    assert "Respuesta del trámite completado" in history

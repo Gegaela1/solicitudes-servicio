@@ -1,3 +1,4 @@
+from app.api.reopen import router as reopen_router
 from app.api.questions import router as questions_router
 from app.api.workflow import router as workflow_router
 from app.api.history import router as history_router
@@ -74,3 +75,5 @@ app.include_router(history_router)
 app.include_router(workflow_router)
 
 app.include_router(questions_router)
+
+app.include_router(reopen_router)

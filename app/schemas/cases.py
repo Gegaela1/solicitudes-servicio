@@ -78,3 +78,7 @@ class Answer(Action):
 class Correction(CaseCreate):
     version: int = Field(ge=1)
     motivo: Reason | None = None
+
+
+class ReopenDecision(Motive):
+    aprobar: bool
