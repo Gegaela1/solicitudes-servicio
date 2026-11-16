@@ -38,3 +38,5 @@ RF-13 : AC-RF-13-01; implementación y pruebas en el diff de la rama; evidencia 
 RF-14 : AC-RF-14-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-14.xml. PR remoto pendiente por falta de acceso autenticado.
 
 RF-15 : AC-RF-15-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-15.xml. PR remoto pendiente por falta de acceso autenticado.
+
+RF-16 : AC-RF-16-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-16.xml. PR remoto pendiente por falta de acceso autenticado.

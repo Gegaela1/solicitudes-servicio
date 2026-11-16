@@ -36,3 +36,5 @@ RF-13 — intercambiar informacion adicional y recuperar etapa anterior. Suite e
 RF-14 — corregir datos con limites de etapa y auditoria administrativa. Suite ejecutada con resultado aprobado (evidencias/RF-14.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-15 — cancelar casos propios solo antes de iniciar revision. Suite ejecutada con resultado aprobado (evidencias/RF-15.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-16 — resolver reaperturas conservando radicado historial y ciclos previos. Suite ejecutada con resultado aprobado (evidencias/RF-16.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

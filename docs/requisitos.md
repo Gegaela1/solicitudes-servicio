@@ -230,3 +230,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-15 — cancelar casos propios solo antes de iniciar revision
 AC-RF-15-01: Solo el propietario cancela en registrada; la cancelación se conserva en historial y se bloquea tras iniciar revisión.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-16 — resolver reaperturas conservando radicado historial y ciclos previos
+AC-RF-16-01: Una petición pendiente no cambia estado; aprobar conserva finalización previa y crea ciclo nuevo sin responsable ni respuesta vigente.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
