@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import StaleDataError
 from app.api.users import router as users_router
+from app.api.cases import router as cases_router
 from app.core.config import load_settings
 from app.api.auth import router as auth_router
 
@@ -62,3 +63,5 @@ async def operational_error(request: Request, exc: OperationalError):
 
 
 app.include_router(users_router)
+
+app.include_router(cases_router)

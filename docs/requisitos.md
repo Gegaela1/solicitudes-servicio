@@ -190,3 +190,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-11 — administrar cuentas roles y proteccion de ultima coordinacion
 AC-RF-11-01: Solo coordinación crea personal; se conservan coordinadores activos y responsables elegibles de casos activos.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-01 — registrar solicitudes persistentes con radicado transaccional
+AC-RF-01-01: Seis datos válidos generan un radicado único de BD; datos inválidos o propietario inyectado no persisten.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
