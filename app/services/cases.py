@@ -99,3 +99,33 @@ def case_output(db, case):
         }
     )
     return result
+
+
+def filtered(db, user, filters):
+    from datetime import datetime, time, timezone
+    from zoneinfo import ZoneInfo
+    from app.services.permissions import is_staff
+
+    q = select(Solicitud)
+    if not is_staff(user):
+        q = q.where(Solicitud.solicitante_id == user.id)
+    for field in ("estado", "responsable_id", "servicio_id", "prioridad", "radicado"):
+        value = getattr(filters, field)
+        if value is not None:
+            q = q.where(getattr(Solicitud, field) == value)
+    zone = ZoneInfo("America/Bogota")
+    if filters.desde:
+        start = (
+            datetime.combine(filters.desde, time.min, zone)
+            .astimezone(timezone.utc)
+            .replace(tzinfo=None)
+        )
+        q = q.where(Solicitud.creada_en >= start)
+    if filters.hasta:
+        end = (
+            datetime.combine(filters.hasta + timedelta(days=1), time.min, zone)
+            .astimezone(timezone.utc)
+            .replace(tzinfo=None)
+        )
+        q = q.where(Solicitud.creada_en < end)
+    return q
