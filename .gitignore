@@ -10,3 +10,6 @@ __pycache__/
 *.sqlite3
 .ruff_cache/
 .pytest_cache/
+
+work/
+.venv-clean/

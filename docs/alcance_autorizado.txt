@@ -1,0 +1,929 @@
+Desarrolla el proyecto completo de gestión de solicitudes de servicio descrito aquí, incluyendo backend, frontend, migraciones, pruebas, documentación y preparación de entrega.
+
+Trabaja de forma incremental hasta completar el alcance. No te limites a proponer un plan ni esperes una confirmación después de cada requisito. Explica brevemente cada incremento y continúa.
+
+Soy principiante: explica en español qué implementaste, para qué sirve y cómo ejecutarlo.
+
+────────────────────────────────────
+1. ENTORNO Y ESTADO INICIAL
+────────────────────────────────────
+
+Trabajo individual.
+Windows, PowerShell y VS Code.
+
+Carpeta:
+C:\Users\Usuario\Documents\solicitudes-servicio
+
+Perfil GitHub:
+https://github.com/Gegaela1/
+
+Nombre previsto del repositorio:
+solicitudes-servicio
+
+IMPORTANTE:
+El enlace anterior es un perfil. Comprueba si el repositorio existe.
+No inventes una URL ni asumas que está creado.
+
+Estado observado anteriormente:
+- Python 3.14.2.
+- Git 2.53.0.windows.1.
+- .venv creado.
+- pip 25.3.
+- FastAPI 0.163.1 instalado.
+- Pydantic 2.14.3 instalado.
+- Uvicorn 0.54.0 instalado.
+
+No está confirmado:
+- Código existente.
+- Git inicializado.
+- Dependencias adicionales.
+- Aplicación arrancada.
+- Base de datos.
+- Commits, ramas o PR.
+
+Inspecciona el estado real antes de modificar.
+Lee AGENTS.md si existe.
+No sobrescribas trabajo previo.
+No cambies Python sin justificar una incompatibilidad real.
+
+Entrega:
+18 de noviembre de 2026, antes de las 18:00,
+America/Bogota.
+
+────────────────────────────────────
+2. FUENTES Y HONESTIDAD DOCUMENTAL
+────────────────────────────────────
+
+Revisa los documentos adjuntos:
+- README_Proyecto_Final_01_solicitudes_de_servicio.md.
+- Proyecto_Final_presentacion.pptx.
+
+Usa solo el Proyecto Final 01.
+
+Guía conocida:
+PF-01, versión 002, fecha 04-11-2026.
+
+Este mensaje fija las decisiones de implementación autorizadas por mí.
+Si contradice una exigencia explícita de la guía, documenta la
+contradicción y resuelve primero lo independiente; no incumplas
+silenciosamente una condición obligatoria.
+
+Distingue:
+- Exigencias de la guía.
+- Respuestas reales del cliente.
+- Decisiones de alcance autorizadas por la estudiante.
+- Implementación observada.
+- Pruebas ejecutadas.
+- Verificaciones pendientes.
+
+No inventes entrevistas, aprobación del profesor, capturas,
+resultados, commits, revisiones externas ni despliegues.
+
+────────────────────────────────────
+3. OBJETIVO Y CONDICIONES OBLIGATORIAS
+────────────────────────────────────
+
+Construir una aplicación web que gestione solicitudes administrativas
+desde su registro hasta su respuesta y finalización.
+
+Debe incluir:
+- Frontend real.
+- API REST.
+- Base de datos relacional.
+- Integración real interfaz → API → base de datos.
+- Autenticación y autorización JWT.
+- Validaciones y permisos en servidor.
+- Historial.
+- Pruebas reproducibles.
+- GitHub y documentación.
+
+CA-01: registrar solicitud persistida y recuperable.
+CA-02: personal autorizado evalúa y gestiona; acción registrada.
+CA-03: consultar estado coherente.
+CA-04: conservar y consultar intervenciones.
+CA-05: solicitante consulta respuesta y finalización.
+CA-06: coordinación consulta información de varias solicitudes.
+
+No basta una API sin interfaz, pantallas simuladas o un CRUD genérico.
+
+────────────────────────────────────
+4. ALCANCE CERRADO PARA IMPLEMENTAR
+────────────────────────────────────
+
+Servicios iniciales:
+1. Expedición de certificados.
+2. Actualización de información.
+3. Solicitudes de documentos.
+4. Consultas sobre trámites.
+5. Peticiones generales.
+
+Son categorías administrativas.
+No implementar generación automática de certificados ni modificación
+de sistemas institucionales: el responsable registra el resultado
+del trámite.
+
+Sin adjuntos en ninguna etapa de esta primera versión.
+La información adicional se intercambia por texto.
+Si se necesitan documentos reales, se indica como limitación,
+sin simular su recepción.
+
+Sin:
+- Pagos.
+- WhatsApp.
+- Correo electrónico real.
+- Integraciones externas.
+- Recuperación de contraseña por correo.
+- Registro público de personal.
+- Eliminación física de solicitudes e historial.
+- Detección automática de duplicados.
+
+Notificaciones únicamente dentro de la aplicación.
+
+No contratar alojamiento ni publicar en nube sin una instrucción
+posterior. La ejecución local será la entrega técnica base.
+Mantener anotada la aclaración académica sobre el apunte “nerocu”.
+
+────────────────────────────────────
+5. ROLES Y CUENTAS
+────────────────────────────────────
+
+Roles:
+solicitante
+atencion
+coordinacion
+
+Una cuenta admite varios roles.
+Coordinación cumple administración: no existe cuarto rol.
+
+Autorregistro:
+- nombre: 2–120 caracteres.
+- documento: 3–30 caracteres, texto, sin controles ni espacios extremos.
+- correo válido, normalizado y único.
+- contraseña: 12–128 caracteres.
+- rol asignado exclusivamente por servidor: solicitante.
+- no aceptar campos de privilegios ni hashes en la entrada.
+- documento no es único en esta versión.
+
+Usar normalización de correo consistente y restricción única.
+No aplicar transformaciones específicas de proveedores de correo.
+
+Coordinación:
+- crea cuentas del personal con contraseña inicial.
+- asigna roles.
+- activa/desactiva cuentas.
+- no puede desactivar ni quitar coordinación al último coordinador activo.
+- puede cambiar su contraseña actual validándola.
+- no puede leer contraseñas.
+
+Permitir a cada usuario cambiar su contraseña con la actual.
+Incluirlo como ampliación técnica de RF-08, sin nuevo RF artificial.
+
+Crear el primer coordinador mediante comando local interactivo:
+- contraseña solicitada sin eco.
+- sin valores secretos predeterminados.
+- sin contraseña en argumentos, repositorio o logs.
+
+Datos de demostración creados mediante script separado y documentado.
+Las contraseñas demo deben generarse o suministrarse localmente,
+no compartirse como credenciales de producción.
+
+────────────────────────────────────
+6. REQUISITOS Y RAMAS OBLIGATORIAS
+────────────────────────────────────
+
+Conserva estos RF y crea una rama por cada requisito:
+
+RF-01:
+Registrar solicitud y radicado.
+feature/RF-01-registrar-solicitud
+
+RF-02:
+Revisar, aceptar o rechazar.
+feature/RF-02-evaluar-solicitud
+
+RF-03:
+Consultar solicitudes y estado.
+feature/RF-03-consultar-solicitudes
+
+RF-04:
+Historial e intervenciones.
+feature/RF-04-historial-atencion
+
+RF-05:
+Respuesta, resultado y finalización.
+feature/RF-05-finalizar-solicitud
+
+RF-06:
+Consulta del resultado por solicitante.
+feature/RF-06-consultar-resultado
+
+RF-07:
+Consolidado y filtros.
+feature/RF-07-consolidado
+
+RF-08:
+Inicio de sesión JWT y cambio de contraseña.
+feature/RF-08-autenticacion-jwt
+
+RF-09:
+Autorización.
+feature/RF-09-autorizacion
+
+RF-10:
+Autorregistro.
+feature/RF-10-autorregistro
+
+RF-11:
+Personal, múltiples roles y activación.
+feature/RF-11-administrar-usuarios
+
+RF-12:
+Asignación y reasignación.
+feature/RF-12-asignar-responsable
+
+RF-13:
+Pedir y responder información por texto.
+feature/RF-13-informacion-adicional
+
+RF-14:
+Corregir solicitud.
+feature/RF-14-corregir-solicitud
+
+RF-15:
+Cancelar solicitud.
+feature/RF-15-cancelar-solicitud
+
+RF-16:
+Pedir y resolver reapertura.
+feature/RF-16-reapertura
+
+RF-17:
+Cerrar duplicados.
+feature/RF-17-duplicados
+
+RF-18:
+Configurar prioridades y plazos.
+feature/RF-18-prioridades-plazos
+
+RF-19:
+Avisos internos.
+feature/RF-19-notificaciones
+
+Ordena por dependencias, no por número.
+
+Cada rama debe contener:
+- implementación del RF.
+- pruebas pertinentes.
+- documentación y criterios relacionados.
+- actualización de trazabilidad.
+- PR a main.
+- autorrevisión real.
+
+Los componentes compartidos mínimos pueden prepararse en
+chore/base-proyecto, documentando la excepción técnica.
+No pongas funcionalidades completas en esa rama para eludir la
+regla de una rama por RF.
+
+No generes cambios vacíos para producir ramas o PR artificiales.
+No simules un flujo histórico después de implementar todo en main.
+
+────────────────────────────────────
+7. DATOS Y VALIDACIONES DE SOLICITUD
+────────────────────────────────────
+
+Campos obligatorios:
+- nombre del solicitante: 2–120.
+- documento: 3–30.
+- correo válido: máximo 254.
+- servicio existente y activo.
+- asunto: 5–150.
+- descripción: 20–5000.
+
+Recortar espacios extremos.
+Rechazar campos obligatorios en blanco y caracteres de control
+inapropiados.
+Permitir saltos de línea normales en textos largos.
+Longitudes: decisiones técnicas de esta versión, no respuestas
+textuales del cliente.
+
+El formulario precarga nombre, documento y correo del perfil.
+Permite corregirlos como datos presentados.
+Eso no cambia la cuenta ni el propietario.
+
+Propietario siempre tomado de la identidad autenticada.
+Nunca aceptar solicitante_id arbitrario.
+
+Radicado:
+SOL-AAAA-NNNNNNNN
+Año UTC de registro e ID interno con relleno mínimo de ocho dígitos.
+Usar identidad de BD, no “máximo + 1”.
+Único, inmutable y generado transaccionalmente.
+Conocerlo no concede permisos.
+
+Respuesta:
+mensaje al solicitante, 10–5000 caracteres.
+
+Resultado:
+descripción de lo realizado, 5–2000 caracteres.
+No existe catálogo de resultados.
+
+Motivos administrativos:
+10–2000 caracteres.
+
+────────────────────────────────────
+8. PERMISOS CERRADOS
+────────────────────────────────────
+
+Solicitante:
+- crear casos propios.
+- listar y consultar únicamente propios.
+- consultar historial público y resultado propios.
+- corregir y cancelar únicamente en registrada.
+- responder requerimientos propios.
+- pedir reapertura de casos propios finalizados.
+- consultar sus notificaciones.
+
+Atención:
+- consultar todas las solicitudes.
+- iniciar revisión de solicitudes registradas.
+- aceptar/rechazar durante revisión.
+- pedir información durante revisión.
+- gestionar casos donde sea responsable:
+  iniciar atención, intervenciones, requerimientos y finalización.
+- no asigna ni reasigna.
+- no administra cuentas ni configura plazos.
+
+Coordinación:
+- consultar todos los casos e historial interno.
+- revisar, aceptar y rechazar.
+- asignar y reasignar.
+- corregir datos administrativos de casos activos con motivo.
+- registrar notas internas.
+- cerrar duplicados.
+- resolver reaperturas.
+- consultar consolidado.
+- administrar personal y roles.
+- configurar prioridad/plazo.
+
+Para finalizar o iniciar atención, incluso coordinación debe estar
+asignada como responsable. Coordinación puede ser responsable
+por su propio rol, sin exigir además rol atencion.
+
+No permitir modificar:
+- radicado.
+- propietario.
+- autorías.
+- fechas históricas.
+- estado mediante PATCH genérico.
+- historial previo.
+
+Corregir datos de casos terminales requiere reapertura cuando aplique.
+Nadie modifica directamente la base de datos desde la interfaz.
+
+Un usuario con varios roles acumula permisos,
+pero cada operación conserva sus condiciones de propiedad y estado.
+
+────────────────────────────────────
+9. ESTADOS Y TRANSICIONES
+────────────────────────────────────
+
+Estados:
+registrada
+en_revision
+pendiente_informacion
+aceptada
+asignada
+en_atencion
+finalizada
+rechazada
+cancelada
+cerrada_duplicidad
+
+Transiciones:
+- creación → registrada.
+- registrada → en_revision: atención/coordinación.
+- registrada → cancelada: propietario.
+- en_revision → aceptada: atención/coordinación.
+- en_revision → rechazada: atención/coordinación, motivo.
+- aceptada → asignada: coordinación elige responsable.
+- asignada → en_atencion: responsable.
+- en_revision/en_atencion → pendiente_informacion:
+  actor autorizado solicita información.
+- pendiente_informacion → etapa anterior:
+  propietario responde.
+- en_atencion → finalizada:
+  responsable registra respuesta y resultado.
+- finalizada → en_revision:
+  coordinación aprueba reapertura.
+- cualquier estado activo → cerrada_duplicidad:
+  coordinación, motivo y caso original.
+
+Estados activos:
+registrada, en_revision, pendiente_informacion,
+aceptada, asignada, en_atencion.
+
+Reglas:
+- iniciar revisión bloquea corrección/cancelación del solicitante.
+- reasignar solo un caso activo con responsable previo,
+  conservando estado y registrando antes/después.
+- responsable elegible: cuenta activa con atencion o coordinacion.
+- al desactivar o quitar permisos a un responsable de casos activos,
+  rechazar la operación hasta reasignarlos.
+- no transiciones libres.
+- no eliminación.
+- transiciones, historial y avisos en una misma transacción.
+
+Rechazo de servicio:
+el catálogo contiene categorías disponibles,
+pero la descripción puede pedir algo fuera de la competencia
+de la organización. Ese caso se rechaza con motivo.
+No introducir un servicio libre adicional.
+
+────────────────────────────────────
+10. HISTORIAL E INFORMACIÓN ADICIONAL
+────────────────────────────────────
+
+Toda acción relevante registra:
+- caso.
+- actor.
+- fecha UTC.
+- tipo.
+- detalle.
+- cambios de estado o valores cuando corresponda.
+- visibilidad.
+
+Visibles al propietario:
+- registro.
+- cambios de estado.
+- requerimientos y respuestas.
+- respuesta y resultado.
+- cancelación y decisión de reapertura.
+
+Internos:
+- notas internas.
+- auditoría detallada de correcciones y asignaciones.
+
+El solicitante no recibe valores internos mediante API,
+aunque la interfaz no los muestre.
+
+No sobrescribir intervenciones.
+Rectificar mediante registro nuevo vinculado al anterior.
+
+Requerimiento:
+- pregunta de 10–2000 caracteres.
+- respuesta de 1–5000.
+- uno abierto por caso.
+- guarda etapa de retorno.
+- propietario responde una vez.
+- respuesta y retorno se registran juntos.
+- información insuficiente permite crear otro requerimiento.
+- sin adjuntos.
+- cierre por duplicidad cierra el requerimiento pendiente con motivo.
+
+────────────────────────────────────
+11. REAPERTURA Y DUPLICIDAD
+────────────────────────────────────
+
+Reapertura:
+- solo desde finalizada.
+- propietario pide con motivo de 10–2000.
+- una petición pendiente por caso.
+- petición no cambia estado.
+- coordinación aprueba/rechaza con motivo.
+- aprobación → en_revision.
+- conservar radicado, propietario, servicio e historial.
+- dejar responsable sin asignar para nueva decisión.
+- limpiar respuesta/resultado/fecha de finalización vigentes
+  después de conservar su versión anterior en historial.
+- nuevo ciclo de atención y plazo.
+- no reapertura de canceladas, rechazadas o duplicadas
+  en esta versión.
+
+Duplicidad:
+- decisión manual de coordinación.
+- solo cerrar caso activo.
+- original existente, distinto y no cerrado por duplicidad.
+- mismo propietario para evitar exposición entre personas.
+- impedir ciclos de referencias.
+- motivo obligatorio.
+- historial conservado.
+- avisar al propietario sin revelar datos de otros usuarios.
+
+────────────────────────────────────
+12. PRIORIDADES, PLAZOS Y REPORTES
+────────────────────────────────────
+
+Prioridades:
+baja, normal, alta.
+
+Servicios iniciales:
+prioridad normal y plazo sin definir.
+No inventar políticas reales.
+
+Coordinación configura:
+- prioridad predeterminada.
+- plazo opcional entero de 1 a 8760 horas calendario.
+
+Al registrar:
+copiar prioridad/plazo del servicio al caso.
+Cambios posteriores del servicio no alteran casos existentes.
+
+No añadir edición individual de plazos en esta versión.
+
+Política de cálculo de esta versión:
+- tiempo calendario.
+- inicio del ciclo inicial: registro.
+- inicio de ciclo reabierto: aprobación de reapertura.
+- esperas no pausan vencimiento.
+- vencimiento = inicio del ciclo + plazo copiado.
+- sin plazo: no calcular vencimiento.
+- vencida: caso activo con vencimiento anterior al momento actual.
+- conservar ciclos previos en historial.
+- mostrar duración total del caso y duración del ciclo vigente
+  con etiquetas distintas.
+
+Estos son acuerdos de implementación de la estudiante,
+no políticas reales confirmadas de la organización.
+
+Consolidado:
+- filtros combinables por estado, responsable, servicio,
+  prioridad y fecha de registro.
+- límites de fecha interpretados en America/Bogota y
+  convertidos a UTC.
+- fecha final inclusiva para el usuario mediante límite
+  técnico exclusivo del día siguiente.
+- conteos por estado, servicio y prioridad.
+- pendientes activos.
+- casos vencidos.
+- duración promedio de resolución por ciclo finalizado.
+- si no hay datos, mostrar cero o “sin datos” según métrica.
+- no mezclar cancelación/rechazo con resolución finalizada.
+- mismas condiciones de filtro para listado y métricas.
+
+Sin gráficos obligatorios: primero tabla y resúmenes correctos.
+
+────────────────────────────────────
+13. SEGURIDAD
+────────────────────────────────────
+
+- JWT firmado, expiración inicial 30 minutos.
+- algoritmo fijado en configuración del servidor, no elegido por token.
+- validar firma, expiración y sub.
+- usar hash Argon2 con biblioteca mantenida.
+- consultar cuenta activa y permisos vigentes.
+- token solo en memoria del frontend.
+- recarga exige iniciar sesión.
+- sin refresh tokens.
+- logout elimina token local.
+- cambio de contraseña invalida tokens anteriores mediante
+  versión de autenticación o mecanismo equivalente sencillo.
+- documentar que logout por sí solo no revoca una copia del JWT.
+- no secretos ni datos personales innecesarios en claims.
+- no hashes en respuestas.
+- no contraseñas/tokens en logs o evidencias.
+- no SECRET_KEY predeterminada funcional.
+- configuración inválida impide arranque con error no sensible.
+- mensajes de credenciales inválidas sin revelar si existe la cuenta.
+- interfaz sin insertar contenido del usuario como HTML.
+- mostrar textos con textContent o mecanismo seguro.
+- datos ficticios.
+- sin CORS abierto si frontend y API comparten origen.
+- --reload exclusivamente en desarrollo.
+
+────────────────────────────────────
+14. STACK Y ARQUITECTURA
+────────────────────────────────────
+
+Python + FastAPI + Pydantic 2.
+SQLAlchemy + SQLite + Alembic.
+PyJWT + pwdlib/Argon2 si compatible.
+HTML + CSS + JavaScript con fetch.
+Ruff.
+pytest/httpx para pruebas selectivas si compatibles.
+
+Verificar documentación oficial y versiones antes de instalar.
+No fijar versiones inventadas.
+Guardar versiones realmente resueltas y verificadas.
+
+Una aplicación FastAPI sirve interfaz y API.
+Capas:
+- api: HTTP.
+- schemas: entradas y salidas.
+- services: reglas, permisos y transacciones.
+- models: persistencia.
+- core: configuración y seguridad.
+- db: conexión y sesiones.
+
+Modelo:
+usuarios, roles, usuarios_roles,
+servicios, solicitudes, intervenciones,
+requerimientos_informacion, peticiones_reapertura,
+notificaciones.
+
+Puedes introducir una tabla ciclos_atencion si simplifica y hace
+fiables reapertura, tiempos y reportes. Justifica la decisión
+en docs/diseno.md antes de crear la migración.
+
+Conservar:
+- datos presentados del solicitante en cada solicitud.
+- referencias de responsables y autores.
+- restricciones únicas.
+- claves foráneas SQLite activadas.
+- control optimista de concurrencia para cambios de casos.
+- operaciones atómicas.
+- índices justificados para filtros.
+- UTC interno.
+- no cascadas que borren historial.
+
+Antes de cada implementación concreta, define esquemas,
+restricciones y relaciones.
+Mantén diagrama ER, modelo relacional, diccionario y clases
+alineados con el código.
+
+────────────────────────────────────
+15. API Y FRONTEND
+────────────────────────────────────
+
+Prefijo /api/v1.
+
+Implementar rutas consistentes para:
+- registro y token.
+- cuenta actual y cambio de contraseña.
+- personal, roles y activación.
+- servicios y configuración.
+- solicitudes, filtros y detalle.
+- historial.
+- revisión, aceptación y rechazo.
+- asignación/reasignación.
+- inicio de atención.
+- intervenciones y rectificaciones.
+- requerimientos y respuestas.
+- finalización y resultado.
+- corrección y cancelación.
+- reapertura y decisión.
+- duplicidad.
+- reportes.
+- notificaciones y lectura.
+- salud técnica.
+
+Métodos y rutas exactos:
+documentarlos y mantener coherencia.
+No es obligatorio conservar rutas de borradores si existe
+una alternativa mejor justificada.
+
+Respuestas:
+201 creación.
+200 consulta/actualización con cuerpo.
+401 sin autenticación válida.
+403 acción sin permiso.
+404 recurso inexistente o caso ajeno cuya existencia no se revela.
+409 conflicto de estado, concurrencia o unicidad.
+422 entrada inválida.
+
+Listados:
+página inicial 1, tamaño 20, máximo 100.
+Orden estable por fecha e ID.
+Filtros permitidos explícitos.
+Rechazar valores inválidos.
+
+Frontend:
+- acceso y registro.
+- navegación por permisos.
+- mis solicitudes y formulario.
+- detalle, estado, historial público y resultado.
+- bandeja atención.
+- gestión de casos.
+- coordinación y reportes.
+- personal y roles.
+- configuración de servicios.
+- avisos.
+
+Diseño:
+limpio, responsive, español y accesible.
+Formularios con etiquetas, errores por campo y foco visible.
+Estados de carga, vacío, éxito y error.
+Confirmación para cancelaciones y cierres.
+No prometer acciones no implementadas.
+Permisos siempre comprobados por backend.
+No datos simulados como sustituto de funciones.
+
+────────────────────────────────────
+16. PRUEBAS Y ACEPTACIÓN
+────────────────────────────────────
+
+Doce pruebas oficiales:
+PF-01 registro válido persistido y recuperable.
+PF-02 entrada inválida rechazada sin persistir.
+PF-03 consulta existente.
+PF-04 consulta inexistente.
+PF-05 gestión autorizada.
+PF-06 gestión no autorizada.
+PF-07 estado coherente.
+PF-08 historial correcto.
+PF-09 finalización recuperable.
+PF-10 consolidado.
+PF-11 persistencia e integridad.
+PF-12 interfaz → API → base de datos.
+
+Añadir:
+- JWT ausente, alterado y expirado.
+- acceso a caso ajeno.
+- privilegios inyectados en autorregistro.
+- múltiples roles.
+- último coordinador protegido.
+- asignación inválida.
+- estados no permitidos.
+- requerimiento abierto duplicado.
+- reapertura y preservación de respuestas anteriores.
+- duplicidad y ciclos.
+- límites de corrección/cancelación.
+- cómputo de plazos.
+- reportes y filtros.
+- concurrencia.
+- texto malicioso renderizado como texto.
+- persistencia tras reinicio.
+
+Para cada RF:
+criterios AC-RF-XX-YY.
+Pruebas de negocio significativas, no solo reflejo del código.
+
+Matriz:
+ID, RF, criterio, escenario, precondiciones, entrada,
+pasos, esperado, observado, estado, evidencia.
+
+Estados:
+pendiente, aprobada, fallida, bloqueada.
+
+Nunca marcar como aprobada sin ejecución.
+Registrar commit, entorno, preparación y pasos.
+
+Instalación limpia:
+intentar entorno separado y BD nueva.
+Nunca borrar la BD del usuario para probar.
+
+────────────────────────────────────
+17. GIT Y GITHUB: AUTORIZACIÓN
+────────────────────────────────────
+
+Estoy autorizando:
+- crear/configurar el repositorio del proyecto si no existe.
+- commits pequeños.
+- ramas por RF.
+- pushes.
+- PR hacia main.
+- autorrevisión y merge de cada PR cuando pasen verificaciones.
+- continuar con la siguiente rama desde main actualizada.
+
+Repositorio privado por defecto si necesitas crearlo.
+Documentar que el evaluador necesita acceso.
+No cambiar visibilidad de un repositorio existente.
+
+Verifica cuenta autenticada antes de publicar.
+No modifiques otros repositorios.
+No sobrescribas remotos existentes sin comprobar destino.
+No hagas force push ni reescribas historial compartido.
+No publiques secretos.
+
+Si no hay acceso GitHub:
+continúa localmente con ramas y commits;
+proporciona comandos concretos para completar push/PR.
+No finjas PR ni merges remotos.
+
+Antes de cada merge:
+- revisar diff.
+- revisar secretos.
+- ejecutar comprobaciones pertinentes.
+- actualizar docs.
+- registrar autorrevisión.
+
+El historial debe reflejar desarrollo real.
+No prometer un número de PR hasta observarlo.
+
+────────────────────────────────────
+18. DOCUMENTACIÓN COMPLETA
+────────────────────────────────────
+
+README.md como informe principal.
+
+docs/requisitos.md:
+problema, objetivos, actores/stakeholders,
+alcance/exclusiones, RF, RNF, reglas,
+restricciones, criterios y fuentes.
+
+docs/decisiones.md:
+decisiones de implementación autorizadas,
+justificación y diferencias respecto al cliente.
+
+docs/entrevista.md:
+respuestas reales proporcionadas.
+Fecha/medio/evidencia pendientes si no se suministran.
+Nunca inventarlos.
+
+docs/diseno.md:
+arquitectura, diagramas ER y clases,
+modelo relacional, diccionario,
+estados, permisos y decisiones.
+
+docs/api.md:
+endpoints reales, entradas/salidas,
+permisos, validaciones y HTTP.
+
+docs/pruebas.md:
+matriz y reproducción.
+
+docs/trazabilidad.md:
+CA → RF → criterio → componente/ruta
+→ PR real → prueba → evidencia.
+
+docs/manual_usuario.md:
+recorridos por rol.
+
+docs/avances.md:
+implementado, ejecutado, verificado,
+pendiente y limitaciones.
+
+docs/sustentacion.md:
+guion, demostración, preguntas y respaldo.
+
+Incluir:
+.gitignore
+.env.example sin secretos.
+dependencias reproducibles.
+migraciones.
+scripts de preparación y demostración.
+instrucciones PowerShell.
+limitaciones y mejoras futuras.
+
+No añadir informes Word/PDF como sustitutos del README.
+
+────────────────────────────────────
+19. EXPOSICIÓN Y PRESENTACIÓN
+────────────────────────────────────
+
+Preparar según PPT:
+3 min problema y alcance.
+3 min diseño.
+4 min implementación.
+5 min demostración.
+3 min pruebas.
+2 min GitHub y cierre.
+
+Usar solo resultados y métricas reales.
+Arquitectura y comportamiento, sin mostrar código.
+Caso completo y error controlado.
+Historial real de ramas, commits y PR.
+Notas de exposición y plan ante fallo de conexión.
+
+Si puedes crear e inspeccionar PPTX editable:
+generarlo cuando haya resultados reales.
+Si no puedes:
+entregar contenido por diapositiva y notas listas para trasladar,
+sin afirmar que existe un archivo.
+
+No inventar capturas ni videos.
+Si se graba evidencia, identificarla como grabación previa.
+
+────────────────────────────────────
+20. EJECUCIÓN AUTÓNOMA POR INCREMENTOS
+────────────────────────────────────
+
+Primero:
+1. Inspecciona carpeta y Git.
+2. Lee fuentes disponibles.
+3. Registra el plan por dependencias y decisiones.
+4. Verifica entorno e instalación.
+5. Completa base mínima frontend/API y documentación.
+6. Configura GitHub si está disponible.
+7. Implementa cada RF en su rama con PR.
+8. Integra solo tras revisión y pruebas.
+9. Completa flujo vertical desde frontend.
+10. Ejecuta pruebas y revisa trazabilidad.
+11. Comprueba instalación reproducible.
+12. Prepara entrega y sustentación.
+
+No pares tras el plan ni tras cada unidad.
+Continúa hasta completar lo autorizado.
+
+Detente únicamente si:
+- necesitas credenciales o autenticación que solo yo puedo aportar.
+- hay una operación destructiva no autorizada.
+- existe contradicción crítica con exigencia oficial.
+- una comprobación requiere mi interacción y no hay alternativa.
+
+Mientras haya un bloqueo parcial, continúa tareas independientes.
+
+Comunica avances breves.
+Explica decisiones relevantes en español.
+No expongas secretos.
+No declares “todo terminado” si quedan requisitos o pruebas pendientes.
+
+Al final entrega:
+- qué quedó implementado.
+- cómo instalar, preparar datos y ejecutar.
+- acceso inicial seguro.
+- pruebas ejecutadas y resultados reales.
+- pendientes/limitaciones.
+- enlace real al repositorio y PR.
+- resumen real de Git.
+- ubicación de documentación y presentación.
+- lista verificable de entrega.

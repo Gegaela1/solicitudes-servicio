@@ -1,4 +1,5 @@
 """Punto de entrada del incremento 0: interfaz y comprobación de salud."""
+
 from pathlib import Path
 from typing import Literal
 
