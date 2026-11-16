@@ -1,3 +1,4 @@
+from app.services.permissions import owner
 from app.services.permissions import responsible
 from app.schemas.cases import Finalize
 from fastapi import HTTPException
@@ -123,5 +124,16 @@ def finish(sid: int, data: Finalize, user=Depends(current_user), db: Session = D
         "finalizacion",
         data.respuesta + "\nResultado: " + data.resultado,
     )
+    db.commit()
+    return case_output(db, case)
+
+
+@router.post("/{sid}/cancelacion")
+def cancel(sid: int, data: Motive, user=Depends(current_user), db: Session = Depends(get_db)):
+    case = case_by_id(db, user, sid, data.version)
+    owner(user, case)
+    state(case, "registrada")
+    current_cycle(db, case).fin = utcnow()
+    transition(db, case, user, "cancelada", "cancelacion", data.motivo)
     db.commit()
     return case_output(db, case)

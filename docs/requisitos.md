@@ -226,3 +226,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-14 — corregir datos con limites de etapa y auditoria administrativa
 AC-RF-14-01: Propietario corrige solo registrada; coordinación corrige casos activos con motivo y auditoría; campos inmutables no se aceptan.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-15 — cancelar casos propios solo antes de iniciar revision
+AC-RF-15-01: Solo el propietario cancela en registrada; la cancelación se conserva en historial y se bloquea tras iniciar revisión.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

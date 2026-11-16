@@ -347,3 +347,31 @@ def test_correction_limits(client):
     assert (
         client.patch(f"/api/v1/solicitudes/{c['id']}", headers=co, json=changed).status_code == 200
     )
+
+
+def test_cancel_before_review_only(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    c = advance(client, h, c, "cancelacion", {"motivo": "La solicitud ya no es necesaria"})
+    assert c["estado"] == "cancelada"
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{c['id']}/cancelacion",
+            headers=h,
+            json={"version": c["version"], "motivo": "Intento repetido de cancelación"},
+        ).status_code
+        == 409
+    )
+    c = create_case(client, h)
+    add_user("staff@example.com", ("atencion",))
+    s = auth(client, "staff@example.com")
+    c = advance(client, s, c, "revision")
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{c['id']}/cancelacion",
+            headers=h,
+            json={"version": c["version"], "motivo": "Quiero cancelar la solicitud"},
+        ).status_code
+        == 409
+    )
