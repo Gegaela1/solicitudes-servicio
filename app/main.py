@@ -1,3 +1,4 @@
+from app.api.history import router as history_router
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -65,3 +66,5 @@ async def operational_error(request: Request, exc: OperationalError):
 app.include_router(users_router)
 
 app.include_router(cases_router)
+
+app.include_router(history_router)

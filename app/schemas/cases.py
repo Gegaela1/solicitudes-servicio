@@ -45,3 +45,9 @@ class Filters(Input):
         if self.desde and self.hasta and self.desde > self.hasta:
             raise ValueError("Rango de fechas inválido")
         return self
+
+
+class Note(Action):
+    detalle: Text = Field(min_length=1, max_length=5000)
+    interna: bool = True
+    rectifica_id: int | None = Field(default=None, gt=0)
