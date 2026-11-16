@@ -1,3 +1,4 @@
+from app.api.notifications import router as notifications_router
 from app.api.reports import router as reports_router
 from app.api.reopen import router as reopen_router
 from app.api.questions import router as questions_router
@@ -80,3 +81,5 @@ app.include_router(questions_router)
 app.include_router(reopen_router)
 
 app.include_router(reports_router)
+
+app.include_router(notifications_router)

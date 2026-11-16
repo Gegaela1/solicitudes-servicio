@@ -1,3 +1,4 @@
+from app.services.notifications import notify
 import json
 from datetime import timedelta
 from fastapi import HTTPException
@@ -46,6 +47,7 @@ def event(db, case, user, kind, detail, internal=False, before=None, changes=Non
         )
     )
     case.actualizada_en = utcnow()
+    notify(db, case, kind, internal)
 
 
 def current_cycle(db, case):
