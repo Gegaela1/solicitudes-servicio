@@ -92,3 +92,34 @@ def test_internal_history_and_rectification(client):
     )
     assert corrected.status_code == 201
     assert client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=co).json()["total"] == 3
+
+
+def test_review_states_and_stale_version(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    add_user("staff@example.com", ("atencion",))
+    s = auth(client, "staff@example.com")
+    path = f"/api/v1/solicitudes/{c['id']}"
+    assert (
+        client.post(path + "/revision", headers=h, json={"version": c["version"]}).status_code
+        == 403
+    )
+    assert (
+        client.post(path + "/aceptacion", headers=s, json={"version": c["version"]}).status_code
+        == 409
+    )
+    r = client.post(path + "/revision", headers=s, json={"version": c["version"]})
+    assert r.status_code == 200 and r.json()["estado"] == "en_revision"
+    assert (
+        client.post(path + "/aceptacion", headers=s, json={"version": c["version"]}).status_code
+        == 409
+    )
+    assert (
+        client.post(
+            path + "/rechazo",
+            headers=s,
+            json={"version": r.json()["version"], "motivo": "No corresponde a nuestra competencia"},
+        ).json()["estado"]
+        == "rechazada"
+    )

@@ -22,3 +22,5 @@ RF-01 — registrar solicitudes persistentes con radicado transaccional. Suite e
 RF-03 — consultar casos con filtros paginacion y propiedad. Suite ejecutada con resultado aprobado (evidencias/RF-03.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-04 — conservar historial con notas privadas y rectificaciones nuevas. Suite ejecutada con resultado aprobado (evidencias/RF-04.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-02 — revisar aceptar o rechazar mediante transiciones autorizadas. Suite ejecutada con resultado aprobado (evidencias/RF-02.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
