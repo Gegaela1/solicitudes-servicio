@@ -222,3 +222,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-13 — intercambiar informacion adicional y recuperar etapa anterior
 AC-RF-13-01: Un único requerimiento abierto suspende revisión o atención; solo propietario responde una vez y recupera la etapa anterior.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-14 — corregir datos con limites de etapa y auditoria administrativa
+AC-RF-14-01: Propietario corrige solo registrada; coordinación corrige casos activos con motivo y auditoría; campos inmutables no se aceptan.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
