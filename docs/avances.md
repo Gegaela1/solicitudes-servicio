@@ -28,3 +28,5 @@ RF-02 — revisar aceptar o rechazar mediante transiciones autorizadas. Suite ej
 RF-12 — asignar y reasignar responsables elegibles con auditoria. Suite ejecutada con resultado aprobado (evidencias/RF-12.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-05 — iniciar atencion y finalizar con respuesta resultado y ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-05.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-06 — mostrar respuesta y resultado al propietario autorizado. Suite ejecutada con resultado aprobado (evidencias/RF-06.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

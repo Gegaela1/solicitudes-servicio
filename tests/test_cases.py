@@ -263,3 +263,18 @@ def test_finish_requires_assigned_actor(client):
     with SessionLocal() as db:
         cycle = db.scalar(select(Ciclo).where(Ciclo.solicitud_id == c["id"]))
         assert cycle.resuelto and cycle.resultado == "Orientación realizada"
+
+
+def test_owner_result_and_history(client):
+    h, co, staff, c, cid, aid = finalized(client)
+    result = client.get(f"/api/v1/solicitudes/{c['id']}/resultado", headers=h)
+    assert result.status_code == 200 and result.json()["resultado"] == "Orientación realizada"
+    history = client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h)
+    assert any(i["tipo"] == "finalizacion" for i in history.json()["items"])
+    add_user("otro@example.com")
+    assert (
+        client.get(
+            f"/api/v1/solicitudes/{c['id']}/resultado", headers=auth(client, "otro@example.com")
+        ).status_code
+        == 404
+    )

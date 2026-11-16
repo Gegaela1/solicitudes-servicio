@@ -214,3 +214,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-05 — iniciar atencion y finalizar con respuesta resultado y ciclo
 AC-RF-05-01: Solo responsable inicia y finaliza; respuesta y resultado válidos se guardan junto al historial en la misma transacción.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-06 — mostrar respuesta y resultado al propietario autorizado
+AC-RF-06-01: Un solicitante recupera la respuesta y finalización de su caso; un usuario ajeno recibe 404.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
