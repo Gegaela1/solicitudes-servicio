@@ -178,3 +178,7 @@ Los criterios AC-RF-XX-YY se detallarán antes de implementar cada RF. El increm
 ### RF-08 — autenticacion JWT y cambio seguro de contrasena
 AC-RF-08-01: Credenciales válidas permiten acceso; JWT alterado o expirado falla; cambiar contraseña invalida el JWT previo.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-09 — aplicar permisos acumulables con propiedad y responsabilidad
+AC-RF-09-01: Un caso ajeno se oculta con 404; múltiples roles acumulan permisos sin omitir la condición de responsable.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
