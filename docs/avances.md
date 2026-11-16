@@ -30,3 +30,5 @@ RF-12 — asignar y reasignar responsables elegibles con auditoria. Suite ejecut
 RF-05 — iniciar atencion y finalizar con respuesta resultado y ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-05.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-06 — mostrar respuesta y resultado al propietario autorizado. Suite ejecutada con resultado aprobado (evidencias/RF-06.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-13 — intercambiar informacion adicional y recuperar etapa anterior. Suite ejecutada con resultado aprobado (evidencias/RF-13.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

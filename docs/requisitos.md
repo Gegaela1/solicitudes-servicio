@@ -218,3 +218,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-06 — mostrar respuesta y resultado al propietario autorizado
 AC-RF-06-01: Un solicitante recupera la respuesta y finalización de su caso; un usuario ajeno recibe 404.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-13 — intercambiar informacion adicional y recuperar etapa anterior
+AC-RF-13-01: Un único requerimiento abierto suspende revisión o atención; solo propietario responde una vez y recupera la etapa anterior.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

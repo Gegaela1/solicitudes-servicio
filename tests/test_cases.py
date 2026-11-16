@@ -278,3 +278,46 @@ def test_owner_result_and_history(client):
         ).status_code
         == 404
     )
+
+
+def test_information_roundtrip(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    add_user("staff@example.com", ("atencion",))
+    s = auth(client, "staff@example.com")
+    c = advance(client, s, c, "revision")
+    r = client.post(
+        f"/api/v1/solicitudes/{c['id']}/requerimientos",
+        headers=s,
+        json={
+            "version": c["version"],
+            "pregunta": "Por favor precisa cuál es el trámite solicitado",
+        },
+    )
+    assert r.status_code == 201, r.text
+    c = r.json()
+    assert c["estado"] == "pendiente_informacion"
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{c['id']}/requerimientos",
+            headers=s,
+            json={"version": c["version"], "pregunta": "Otra pregunta adicional"},
+        ).status_code
+        == 409
+    )
+    req = client.get(f"/api/v1/solicitudes/{c['id']}/requerimientos", headers=h).json()["items"][0]
+    r = client.post(
+        f"/api/v1/requerimientos/{req['id']}/respuesta",
+        headers=h,
+        json={"version": c["version"], "respuesta": "Solicito orientación administrativa"},
+    )
+    assert r.status_code == 200 and r.json()["estado"] == "en_revision"
+    assert (
+        client.post(
+            f"/api/v1/requerimientos/{req['id']}/respuesta",
+            headers=h,
+            json={"version": r.json()["version"], "respuesta": "otra"},
+        ).status_code
+        == 409
+    )
