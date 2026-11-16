@@ -65,3 +65,11 @@ class Assign(Motive):
 class Finalize(Action):
     respuesta: Text = Field(min_length=10, max_length=5000)
     resultado: Text = Field(min_length=5, max_length=2000)
+
+
+class Question(Action):
+    pregunta: Reason
+
+
+class Answer(Action):
+    respuesta: Text = Field(min_length=1, max_length=5000)
