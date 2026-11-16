@@ -1,0 +1,51 @@
+{
+  "fecha_utc": "2026-11-16T22:27:49.348221+00:00",
+  "version": "0.0.1 sin commit",
+  "python": "3.14.2",
+  "pruebas": [
+    {
+      "ruta": "/",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/api/v1/salud",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/docs",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/openapi.json",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/static/js/inicio.js",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/static/css/estilos.css",
+      "esperado": 200,
+      "observado": 200,
+      "estado": "aprobada"
+    },
+    {
+      "ruta": "/no-existe",
+      "esperado": 404,
+      "observado": 404,
+      "estado": "aprobada"
+    }
+  ],
+  "navegador": "aprobada: carga y botón con éxito; servidor detenido produce mensaje de error; tras reinicio vuelve éxito",
+  "persistencia": "no implementada"
+}

@@ -1,0 +1,12 @@
+:root { font-family: system-ui, sans-serif; color: #183047; background: #f3f6f8; }
+body { margin: 0; }
+main { max-width: 760px; margin: 8vh auto; padding: 2rem; }
+h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.1; }
+p { line-height: 1.6; }
+.etiqueta { color: #436176; }
+button { background: #164e63; color: white; border: 0; border-radius: .35rem; padding: .8rem 1rem; font: inherit; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+a { color: #164e63; }
+[data-resultado="error"] { color: #9c2323; }
+[data-resultado="exito"] { color: #14633b; }
+:focus-visible { outline: 3px solid #cc8000; outline-offset: 4px; }
