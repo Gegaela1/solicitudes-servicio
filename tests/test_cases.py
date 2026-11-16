@@ -42,3 +42,23 @@ def test_persist_valid_and_invalid(client):
     )
     with SessionLocal() as db:
         assert db.scalar(select(func.count()).select_from(Solicitud)) == 1
+
+
+def test_visibility_pagination_and_filters(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    add_user("otra@example.com")
+    other = auth(client, "otra@example.com")
+    assert client.get(f"/api/v1/solicitudes/{c['id']}", headers=other).status_code == 404
+    assert client.get("/api/v1/solicitudes/99999", headers=h).status_code == 404
+    assert client.get("/api/v1/solicitudes", headers=other).json()["total"] == 0
+    assert client.get("/api/v1/solicitudes?estado=inventado", headers=h).status_code == 422
+    assert client.get("/api/v1/solicitudes?size=101", headers=h).status_code == 422
+    assert (
+        client.get("/api/v1/solicitudes?desde=2026-11-17&hasta=2026-11-16", headers=h).status_code
+        == 422
+    )
+    assert (
+        client.get("/api/v1/solicitudes?radicado=" + c["radicado"], headers=h).json()["total"] == 1
+    )

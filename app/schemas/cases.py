@@ -1,4 +1,6 @@
-from pydantic import Field
+from datetime import date
+from typing import Literal
+from pydantic import Field, model_validator
 from app.schemas.common import Identity, Input, Text
 
 
@@ -10,3 +12,36 @@ class CaseCreate(Identity):
 
 class Action(Input):
     version: int = Field(ge=1)
+
+
+State = Literal[
+    "registrada",
+    "en_revision",
+    "pendiente_informacion",
+    "aceptada",
+    "asignada",
+    "en_atencion",
+    "finalizada",
+    "rechazada",
+    "cancelada",
+    "cerrada_duplicidad",
+]
+Priority = Literal["baja", "normal", "alta"]
+
+
+class Filters(Input):
+    page: int = Field(default=1, ge=1)
+    size: int = Field(default=20, ge=1, le=100)
+    estado: State | None = None
+    responsable_id: int | None = Field(default=None, gt=0)
+    servicio_id: int | None = Field(default=None, gt=0)
+    prioridad: Priority | None = None
+    desde: date | None = None
+    hasta: date | None = None
+    radicado: str | None = Field(default=None, max_length=40)
+
+    @model_validator(mode="after")
+    def dates(self):
+        if self.desde and self.hasta and self.desde > self.hasta:
+            raise ValueError("Rango de fechas inválido")
+        return self

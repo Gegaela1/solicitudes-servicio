@@ -194,3 +194,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-01 — registrar solicitudes persistentes con radicado transaccional
 AC-RF-01-01: Seis datos válidos generan un radicado único de BD; datos inválidos o propietario inyectado no persisten.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-03 — consultar casos con filtros paginacion y propiedad
+AC-RF-03-01: Listados y detalle respetan propiedad; casos ajenos o inexistentes devuelven 404 y filtros inválidos 422.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.
