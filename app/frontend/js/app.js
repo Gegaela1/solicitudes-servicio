@@ -62,3 +62,6 @@ function loginPage() {
 }
 function passwordPage(){clear('Seguridad'); form('Cambiar contraseña',[{name:'actual',label:'Contraseña actual',type:'password'},{name:'nueva',label:'Nueva contraseña (12–128)',type:'password',min:12,max:128}],async d=>{await api('/usuarios/me/contrasena','POST',d);token=null;me=null;navigation();loginPage();message('Contraseña cambiada. Inicia sesión nuevamente.');});}
 loginPage();
+function identityFields(data={}) {return [{name:'nombre',label:'Nombre',min:2,max:120,value:data.nombre},{name:'documento',label:'Documento',min:3,max:30,value:data.documento},{name:'correo',label:'Correo',type:'email',max:254,value:data.correo}];}
+function registerPage(){clear('Cuenta solicitante');form('Registro',[...identityFields(),{name:'contrasena',label:'Contraseña (12–128 caracteres)',type:'password',min:12,max:128}],async d=>{await api('/auth/registro','POST',d);loginPage();message('Cuenta creada. Ya puedes ingresar.');},'Crear cuenta');button('Volver al acceso',loginPage);}
+loginPage();

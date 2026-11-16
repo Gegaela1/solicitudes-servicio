@@ -54,3 +54,7 @@ class Login(Input):
 class PasswordChange(Input):
     actual: str = Field(min_length=1, max_length=128)
     nueva: Password
+
+
+class Registration(Identity):
+    contrasena: Password

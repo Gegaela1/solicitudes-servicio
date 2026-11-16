@@ -182,3 +182,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-09 — aplicar permisos acumulables con propiedad y responsabilidad
 AC-RF-09-01: Un caso ajeno se oculta con 404; múltiples roles acumulan permisos sin omitir la condición de responsable.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-10 — autorregistro de solicitantes sin inyeccion de privilegios
+AC-RF-10-01: Correo normalizado único; autorregistro asigna exclusivamente solicitante y rechaza roles o hashes adicionales.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

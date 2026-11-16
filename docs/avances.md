@@ -12,3 +12,5 @@ Base: migración aplicada, importación de dependencias y Argon2 verificados; py
 RF-08 — autenticacion JWT y cambio seguro de contrasena. Suite ejecutada con resultado aprobado (evidencias/RF-08.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-09 — aplicar permisos acumulables con propiedad y responsabilidad. Suite ejecutada con resultado aprobado (evidencias/RF-09.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-10 — autorregistro de solicitantes sin inyeccion de privilegios. Suite ejecutada con resultado aprobado (evidencias/RF-10.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

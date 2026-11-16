@@ -14,3 +14,5 @@ PF-11 (integridad) y PF-12 (integración con BD): pendientes. Incremento 0: app/
 RF-08 : AC-RF-08-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-08.xml. PR remoto pendiente por falta de acceso autenticado.
 
 RF-09 : AC-RF-09-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-09.xml. PR remoto pendiente por falta de acceso autenticado.
+
+RF-10 : AC-RF-10-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-10.xml. PR remoto pendiente por falta de acceso autenticado.
