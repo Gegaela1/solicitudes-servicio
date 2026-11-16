@@ -1,3 +1,4 @@
+from app.schemas.common import Reason
 from datetime import date
 from typing import Literal
 from pydantic import Field, model_validator
@@ -51,3 +52,7 @@ class Note(Action):
     detalle: Text = Field(min_length=1, max_length=5000)
     interna: bool = True
     rectifica_id: int | None = Field(default=None, gt=0)
+
+
+class Motive(Action):
+    motivo: Reason

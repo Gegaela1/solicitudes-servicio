@@ -1,3 +1,4 @@
+from app.api.workflow import router as workflow_router
 from app.api.history import router as history_router
 from pathlib import Path
 from fastapi import FastAPI, Request
@@ -68,3 +69,5 @@ app.include_router(users_router)
 app.include_router(cases_router)
 
 app.include_router(history_router)
+
+app.include_router(workflow_router)
