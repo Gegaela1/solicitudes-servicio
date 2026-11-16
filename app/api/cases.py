@@ -1,3 +1,4 @@
+from app.services.cases import state, iso
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
@@ -73,3 +74,15 @@ def listing(
 @router.get("/solicitudes/{sid}")
 def detail(sid: int, user=Depends(current_user), db: Session = Depends(get_db)):
     return case_output(db, case_by_id(db, user, sid))
+
+
+@router.get("/solicitudes/{sid}/resultado")
+def result(sid: int, user=Depends(current_user), db: Session = Depends(get_db)):
+    case = case_by_id(db, user, sid)
+    state(case, "finalizada")
+    return {
+        "radicado": case.radicado,
+        "respuesta": case.respuesta_final,
+        "resultado": case.resultado_final,
+        "finalizada_en": iso(case.finalizada_en),
+    }
