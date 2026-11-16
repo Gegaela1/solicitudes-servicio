@@ -198,3 +198,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-03 — consultar casos con filtros paginacion y propiedad
 AC-RF-03-01: Listados y detalle respetan propiedad; casos ajenos o inexistentes devuelven 404 y filtros inválidos 422.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-04 — conservar historial con notas privadas y rectificaciones nuevas
+AC-RF-04-01: Cada nota conserva autor y caso; el solicitante no recibe notas ni auditoría interna; una rectificación agrega registro sin sobrescribir.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

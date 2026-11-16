@@ -62,3 +62,33 @@ def test_visibility_pagination_and_filters(client):
     assert (
         client.get("/api/v1/solicitudes?radicado=" + c["radicado"], headers=h).json()["total"] == 1
     )
+
+
+def test_internal_history_and_rectification(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    add_user("coord@example.com", ("coordinacion",))
+    co = auth(client, "coord@example.com")
+    note = client.post(
+        f"/api/v1/solicitudes/{c['id']}/intervenciones",
+        headers=co,
+        json={"version": c["version"], "detalle": "Nota privada", "interna": True},
+    )
+    assert note.status_code == 201, note.text
+    public = client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h)
+    assert "Nota privada" not in public.text and "datos_cambio" not in public.text
+    internal = client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=co).json()["items"][0]
+    assert internal["interna"]
+    corrected = client.post(
+        f"/api/v1/solicitudes/{c['id']}/intervenciones",
+        headers=co,
+        json={
+            "version": note.json()["version"],
+            "detalle": "Nota corregida",
+            "interna": True,
+            "rectifica_id": internal["id"],
+        },
+    )
+    assert corrected.status_code == 201
+    assert client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=co).json()["total"] == 3
