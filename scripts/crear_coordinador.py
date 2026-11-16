@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from getpass import getpass
 from sqlalchemy import select, func
 from app.db.session import SessionLocal
@@ -8,7 +9,7 @@ from app.core.security import password_hash
 from scripts.preparar import seed
 
 
-def main():
+def create_initial():
     seed()
     with SessionLocal.begin() as db:
         count = db.scalar(
@@ -40,6 +41,15 @@ def main():
             )
         )
     print("Coordinación creada; inicia sesión en la aplicación.")
+
+
+def main():
+    try:
+        create_initial()
+    except IntegrityError:
+        print(
+            "No se creó la cuenta: el correo ya existe o cambió la configuración. Revisa las cuentas sin compartir contraseñas."
+        )
 
 
 if __name__ == "__main__":

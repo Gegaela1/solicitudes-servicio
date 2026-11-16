@@ -511,6 +511,7 @@ def test_service_snapshots_deadline(client):
         cycle = db.scalar(select(Ciclo).where(Ciclo.solicitud_id == c["id"]))
         cycle.inicio = utcnow() - timedelta(hours=25)
     assert client.get(f"/api/v1/solicitudes/{c['id']}", headers=h).json()["vencida"] is True
+    assert client.get("/api/v1/reportes/solicitudes", headers=co).json()["vencidas"] == 1
 
 
 def test_report_filtered_counts_and_dates(client):

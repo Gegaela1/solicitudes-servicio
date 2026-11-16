@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 os.environ["SECRET_KEY"] = secrets.token_urlsafe(48)
+Path("work/tmp").mkdir(parents=True, exist_ok=True)
 TEST_DIR = Path(tempfile.mkdtemp(prefix="pf01-", dir="work/tmp"))
 os.environ["DATABASE_URL"] = "sqlite:///" + (TEST_DIR / "test.db").as_posix()
 

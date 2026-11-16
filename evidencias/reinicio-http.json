@@ -1,0 +1,12 @@
+{
+  "fecha_utc": "2026-11-16T23:42:22.711142+00:00",
+  "accion": "Servidor detenido y vuelto a iniciar, nuevo login y consulta HTTP del caso anterior",
+  "http": 200,
+  "observado": {
+    "radicado": "SOL-2026-00000001",
+    "respuesta": "Se proporcionó orientación sobre el procedimiento solicitado.",
+    "resultado": "Orientación administrativa completada",
+    "finalizada_en": "2026-11-16T23:31:17.673355Z"
+  },
+  "estado": "aprobada"
+}
