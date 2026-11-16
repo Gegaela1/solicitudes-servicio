@@ -26,3 +26,5 @@ RF-04 — conservar historial con notas privadas y rectificaciones nuevas. Suite
 RF-02 — revisar aceptar o rechazar mediante transiciones autorizadas. Suite ejecutada con resultado aprobado (evidencias/RF-02.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-12 — asignar y reasignar responsables elegibles con auditoria. Suite ejecutada con resultado aprobado (evidencias/RF-12.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-05 — iniciar atencion y finalizar con respuesta resultado y ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-05.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
