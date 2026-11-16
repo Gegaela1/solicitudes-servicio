@@ -1,3 +1,6 @@
+from sqlalchemy import select, text
+from app.models.entities import Solicitud, Requerimiento
+from app.schemas.cases import Duplicate
 from app.services.permissions import owner
 from app.services.permissions import responsible
 from app.schemas.cases import Finalize
@@ -135,5 +138,50 @@ def cancel(sid: int, data: Motive, user=Depends(current_user), db: Session = Dep
     state(case, "registrada")
     current_cycle(db, case).fin = utcnow()
     transition(db, case, user, "cancelada", "cancelacion", data.motivo)
+    db.commit()
+    return case_output(db, case)
+
+
+@router.post("/{sid}/duplicidad")
+def duplicate(sid: int, data: Duplicate, user=Depends(current_user), db: Session = Depends(get_db)):
+    db.execute(text("BEGIN IMMEDIATE"))
+    require_roles(user, "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, *ACTIVE)
+    original = db.get(Solicitud, data.original_id)
+    if (
+        not original
+        or original.id == sid
+        or original.estado == "cerrada_duplicidad"
+        or original.solicitante_id != case.solicitante_id
+    ):
+        raise HTTPException(
+            422, "Caso original inválido; debe ser distinto, del mismo propietario y no duplicado"
+        )
+    seen = {sid}
+    cursor = original
+    while cursor:
+        if cursor.id in seen:
+            raise HTTPException(409, "La vinculación generaría un ciclo")
+        seen.add(cursor.id)
+        cursor = db.get(Solicitud, cursor.original_id) if cursor.original_id else None
+    case.original_id = original.id
+    req = db.scalar(
+        select(Requerimiento).where(
+            Requerimiento.solicitud_id == sid, Requerimiento.cerrado_en.is_(None)
+        )
+    )
+    if req:
+        req.cerrado_en = utcnow()
+        req.motivo_cierre = data.motivo
+    current_cycle(db, case).fin = utcnow()
+    transition(
+        db,
+        case,
+        user,
+        "cerrada_duplicidad",
+        "duplicidad",
+        data.motivo + " · Caso original: " + original.radicado,
+    )
     db.commit()
     return case_output(db, case)

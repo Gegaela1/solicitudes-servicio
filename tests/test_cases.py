@@ -423,3 +423,55 @@ def test_reopen_preserves_finalized_cycle(client):
         assert db.get(Solicitud, c["id"]).respuesta_final is None
     history = client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h).text
     assert "Respuesta del trámite completado" in history
+
+
+def test_duplicates_preserve_history_and_close_question(client):
+    add_user()
+    h = auth(client)
+    original = create_case(client, h)
+    c = create_case(client, h)
+    add_user("coord@example.com", ("coordinacion",))
+    co = auth(client, "coord@example.com")
+    c = advance(client, co, c, "revision")
+    r = client.post(
+        f"/api/v1/solicitudes/{c['id']}/requerimientos",
+        headers=co,
+        json={"version": c["version"], "pregunta": "Precisa el alcance de esta solicitud"},
+    )
+    c = r.json()
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{c['id']}/duplicidad",
+            headers=co,
+            json={
+                "version": c["version"],
+                "original_id": c["id"],
+                "motivo": "Caso duplicado por revisión manual",
+            },
+        ).status_code
+        == 422
+    )
+    c = advance(
+        client,
+        co,
+        c,
+        "duplicidad",
+        {"original_id": original["id"], "motivo": "Caso duplicado por revisión manual"},
+    )
+    assert c["estado"] == "cerrada_duplicidad"
+    req = client.get(f"/api/v1/solicitudes/{c['id']}/requerimientos", headers=h).json()["items"][0]
+    assert req["cerrado_en"]
+    # No se puede usar un duplicado como original, lo que también impide ciclos.
+    assert (
+        client.post(
+            f"/api/v1/solicitudes/{original['id']}/duplicidad",
+            headers=co,
+            json={
+                "version": original["version"],
+                "original_id": c["id"],
+                "motivo": "Intento de relación circular",
+            },
+        ).status_code
+        == 422
+    )
+    assert client.get(f"/api/v1/solicitudes/{c['id']}/historial", headers=h).json()["total"] >= 4
