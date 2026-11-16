@@ -1,3 +1,5 @@
+from app.schemas.cases import Correction
+from app.services.cases import ACTIVE
 from app.services.cases import state, iso
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -86,3 +88,36 @@ def result(sid: int, user=Depends(current_user), db: Session = Depends(get_db)):
         "resultado": case.resultado_final,
         "finalizada_en": iso(case.finalizada_en),
     }
+
+
+@router.patch("/solicitudes/{sid}")
+def correct(sid: int, data: Correction, user=Depends(current_user), db: Session = Depends(get_db)):
+    case = case_by_id(db, user, sid, data.version)
+    personal = case.solicitante_id == user.id and case.estado == "registrada"
+    if not personal:
+        require_roles(user, "coordinacion")
+        state(case, *ACTIVE)
+        if not data.motivo:
+            raise HTTPException(422, "Corrección administrativa requiere motivo")
+    service = db.get(Servicio, data.servicio_id)
+    if not service or not service.activo:
+        raise HTTPException(422, "Servicio inexistente o inactivo")
+    fields = ("nombre", "documento", "correo", "servicio_id", "asunto", "descripcion")
+    before = {f: getattr(case, f) for f in fields}
+    for f in fields:
+        setattr(case, f, getattr(data, f))
+    after = {f: getattr(case, f) for f in fields}
+    if before == after:
+        raise HTTPException(409, "No hay cambios para registrar")
+    event(
+        db,
+        case,
+        user,
+        "auditoria_correccion",
+        data.motivo or "Corrección por propietario",
+        internal=True,
+        changes={"antes": before, "despues": after},
+    )
+    event(db, case, user, "correccion", "Datos de la solicitud corregidos")
+    db.commit()
+    return case_output(db, case)

@@ -321,3 +321,29 @@ def test_information_roundtrip(client):
         ).status_code
         == 409
     )
+
+
+def test_correction_limits(client):
+    add_user()
+    h = auth(client)
+    c = create_case(client, h)
+    changed = {**CASE, "asunto": "Asunto corregido", "version": c["version"]}
+    r = client.patch(f"/api/v1/solicitudes/{c['id']}", headers=h, json=changed)
+    assert r.status_code == 200, r.text
+    c = r.json()
+    add_user("staff@example.com", ("atencion",))
+    s = auth(client, "staff@example.com")
+    c = advance(client, s, c, "revision")
+    changed.update(version=c["version"], asunto="Segunda corrección")
+    assert (
+        client.patch(f"/api/v1/solicitudes/{c['id']}", headers=h, json=changed).status_code == 403
+    )
+    add_user("coord@example.com", ("coordinacion",))
+    co = auth(client, "coord@example.com")
+    assert (
+        client.patch(f"/api/v1/solicitudes/{c['id']}", headers=co, json=changed).status_code == 422
+    )
+    changed["motivo"] = "Corrección administrativa justificada"
+    assert (
+        client.patch(f"/api/v1/solicitudes/{c['id']}", headers=co, json=changed).status_code == 200
+    )
