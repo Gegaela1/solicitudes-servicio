@@ -10,3 +10,5 @@ GitHub: gh no instalado. No se ha comprobado existencia privada ni autenticació
 Base: migración aplicada, importación de dependencias y Argon2 verificados; pytest: 1 aprobada. Autorrevisión: sin secretos preparados, relaciones sin borrado en cascada y configuración falla sin clave. Integración local; PR remoto pendiente por acceso GitHub.
 
 RF-08 — autenticacion JWT y cambio seguro de contrasena. Suite ejecutada con resultado aprobado (evidencias/RF-08.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-09 — aplicar permisos acumulables con propiedad y responsabilidad. Suite ejecutada con resultado aprobado (evidencias/RF-09.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
