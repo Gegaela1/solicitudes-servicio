@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 
 from app.db.session import Base, SessionLocal, engine
 from app.main import app
-from app.models.entities import Rol
+from app.models.entities import Rol, Servicio
 
 
 @pytest.fixture(autouse=True)
@@ -21,6 +21,8 @@ def database():
     Base.metadata.create_all(engine)
     with SessionLocal.begin() as db:
         db.add_all([Rol(nombre=n) for n in ["solicitante", "atencion", "coordinacion"]])
+    with SessionLocal.begin() as db:
+        db.add(Servicio(nombre="Peticiones generales"))
     yield
 
 
