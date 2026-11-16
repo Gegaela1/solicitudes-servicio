@@ -8,7 +8,7 @@ Se incorpora ciclos_atencion: cada reapertura conserva el ciclo finalizado con r
 
 Restricciones: correo/radicado únicos; claves foráneas activadas; asociaciones usuario-rol con PK compuesta; índices por propietario, estado, servicio, responsable y prioridad. Índices parciales únicos impiden dos requerimientos abiertos y dos reaperturas pendientes. Control optimista con version_id_col en solicitudes. No hay cascadas de eliminación.
 
-El esquema compartido prepara relaciones; los RF se implementan en ramas propias. La migración inicial se generará desde este esquema y se conservará como definición explícita independiente de cambios futuros del ORM.
+El esquema compartido prepara relaciones; los RF se implementan en ramas propias. La migración inicial se generó desde este esquema y se conserva como definición explícita independiente de cambios futuros del ORM.
 
 ## Diagrama ER implementado
 ```mermaid
