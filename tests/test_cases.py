@@ -201,3 +201,65 @@ def test_assign_and_active_responsible(client):
         "put",
     )
     assert c["estado"] == "asignada" and c["responsable_id"] == cid
+
+
+def finalized(client):
+    h, co, staff, c, cid, aid = prepared(client)
+    c = advance(
+        client,
+        co,
+        c,
+        "responsable",
+        {"responsable_id": aid, "motivo": "Asignación para resolución"},
+        "put",
+    )
+    c = advance(client, staff, c, "inicio-atencion")
+    c = advance(
+        client,
+        staff,
+        c,
+        "finalizacion",
+        {"respuesta": "Respuesta del trámite completado", "resultado": "Orientación realizada"},
+    )
+    return h, co, staff, c, cid, aid
+
+
+def test_finish_requires_assigned_actor(client):
+    h, co, staff, c, cid, aid = prepared(client)
+    c = advance(
+        client,
+        co,
+        c,
+        "responsable",
+        {"responsable_id": aid, "motivo": "Asignación para resolución"},
+        "put",
+    )
+    path = f"/api/v1/solicitudes/{c['id']}"
+    assert (
+        client.post(
+            path + "/inicio-atencion", headers=co, json={"version": c["version"]}
+        ).status_code
+        == 403
+    )
+    c = advance(client, staff, c, "inicio-atencion")
+    assert (
+        client.post(
+            path + "/finalizacion",
+            headers=staff,
+            json={"version": c["version"], "respuesta": "corta", "resultado": "hecho"},
+        ).status_code
+        == 422
+    )
+    c = advance(
+        client,
+        staff,
+        c,
+        "finalizacion",
+        {"respuesta": "Respuesta del trámite completado", "resultado": "Orientación realizada"},
+    )
+    assert c["estado"] == "finalizada"
+    from app.models.entities import Ciclo
+
+    with SessionLocal() as db:
+        cycle = db.scalar(select(Ciclo).where(Ciclo.solicitud_id == c["id"]))
+        assert cycle.resuelto and cycle.resultado == "Orientación realizada"

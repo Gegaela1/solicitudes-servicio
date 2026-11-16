@@ -210,3 +210,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-12 — asignar y reasignar responsables elegibles con auditoria
 AC-RF-12-01: Solo coordinación asigna personal activo; reasignación conserva estado y registra antes/después; no se deshabilita personal con casos activos.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-05 — iniciar atencion y finalizar con respuesta resultado y ciclo
+AC-RF-05-01: Solo responsable inicia y finaliza; respuesta y resultado válidos se guardan junto al historial en la misma transacción.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

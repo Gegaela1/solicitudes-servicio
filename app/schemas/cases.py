@@ -60,3 +60,8 @@ class Motive(Action):
 
 class Assign(Motive):
     responsable_id: int = Field(gt=0)
+
+
+class Finalize(Action):
+    respuesta: Text = Field(min_length=10, max_length=5000)
+    resultado: Text = Field(min_length=5, max_length=2000)

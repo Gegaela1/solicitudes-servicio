@@ -1,3 +1,5 @@
+from app.services.permissions import responsible
+from app.schemas.cases import Finalize
 from fastapi import HTTPException
 from app.models.entities import Usuario
 from app.api.deps import roles
@@ -85,5 +87,41 @@ def assign(sid: int, data: Assign, user=Depends(current_user), db: Session = Dep
     )
     if before != case.estado:
         event(db, case, user, "estado", "Responsable asignado; solicitud asignada", before=before)
+    db.commit()
+    return case_output(db, case)
+
+
+@router.post("/{sid}/inicio-atencion")
+def start(sid: int, data: Action, user=Depends(current_user), db: Session = Depends(get_db)):
+    case = case_by_id(db, user, sid, data.version)
+    responsible(user, case)
+    state(case, "asignada")
+    case.atencion_iniciada_en = utcnow()
+    transition(db, case, user, "en_atencion", "inicio_atencion", "Atención iniciada")
+    db.commit()
+    return case_output(db, case)
+
+
+@router.post("/{sid}/finalizacion")
+def finish(sid: int, data: Finalize, user=Depends(current_user), db: Session = Depends(get_db)):
+    case = case_by_id(db, user, sid, data.version)
+    responsible(user, case)
+    state(case, "en_atencion")
+    case.respuesta_final = data.respuesta
+    case.resultado_final = data.resultado
+    case.finalizada_en = utcnow()
+    cycle = current_cycle(db, case)
+    cycle.fin = case.finalizada_en
+    cycle.respuesta = data.respuesta
+    cycle.resultado = data.resultado
+    cycle.resuelto = True
+    transition(
+        db,
+        case,
+        user,
+        "finalizada",
+        "finalizacion",
+        data.respuesta + "\nResultado: " + data.resultado,
+    )
     db.commit()
     return case_output(db, case)
