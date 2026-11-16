@@ -1,6 +1,6 @@
 # Publicación pendiente en GitHub
 
-No se encontró gh instalado ni una credencial de GitHub utilizable sin interacción. No se ha comprobado si solicitudes-servicio existe de forma privada. No se creó remoto ni se publicó. La evidencia es evidencias/github-estado.json.
+No se encontró gh instalado ni una credencial de GitHub utilizable sin interacción. No se ha comprobado si solicitudes-servicio existe de forma privada. No se creó remoto ni se publicó. La consulta pública a la API de GitHub devolvió HTTP 404: puede ser inexistente o privado, así que no se afirma ninguna de esas dos posibilidades. La evidencia es evidencias/github-estado.json.
 
 ## Después de autenticarte tú
 

@@ -1,5 +1,6 @@
 {
   "autenticacion": "no disponible sin interacción",
-  "repositorio": "existencia privada no comprobada",
-  "publicacion": "pendiente; no se añadió remoto ni se publicó"
+  "repositorio": "No accesible públicamente (HTTP 404); no permite distinguir inexistente de privado",
+  "publicacion": "pendiente; no se añadió remoto ni se publicó",
+  "consulta_publica_http": 404
 }
