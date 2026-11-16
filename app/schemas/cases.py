@@ -45,6 +45,8 @@ class Filters(Input):
     def dates(self):
         if self.desde and self.hasta and self.desde > self.hasta:
             raise ValueError("Rango de fechas inválido")
+        if self.hasta == date.max:
+            raise ValueError("La fecha final excede el rango admitido")
         return self
 
 

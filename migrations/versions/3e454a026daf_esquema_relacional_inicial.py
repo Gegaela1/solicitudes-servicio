@@ -1,7 +1,7 @@
 """esquema relacional inicial
 
 Revision ID: 3e454a026daf
-Revises: 
+Revises:
 Create Date: 2026-11-16 17:46:30.216587
 
 """

@@ -93,7 +93,10 @@ def case_output(db, case):
         {
             "vencimiento": iso(due),
             "vencida": bool(due and due < now and case.estado in ACTIVE),
-            "duracion_total_horas": ((case.finalizada_en or now) - case.creada_en).total_seconds()
+            "duracion_total_horas": (
+                (cycle.fin if cycle and case.estado not in ACTIVE and cycle.fin else now)
+                - case.creada_en
+            ).total_seconds()
             / 3600,
             "duracion_ciclo_horas": ((cycle.fin or now) - cycle.inicio).total_seconds() / 3600
             if cycle

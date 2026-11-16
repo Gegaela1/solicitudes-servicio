@@ -46,3 +46,11 @@ RF-18 — configurar plazos por servicio sin alterar casos existentes. Suite eje
 RF-07 — consultar consolidado con filtros coherentes y metricas por ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-07.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-19 — notificar acciones dentro de la transaccion y marcar avisos propios. Suite ejecutada con resultado aprobado (evidencias/RF-19.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+## Estado final de preparación
+
+RF-01 a RF-19 implementados en 19 ramas reales. Refactor de entrega: rutas como adaptadores HTTP y reglas en servicios; suite repetida tras refactor. 26 pruebas aprobadas, tanto en entorno habitual como en instalación separada. Instalación limpia con versiones fijadas, nueva BD y alembic check correcto. Flujo HTTP completo y consulta del caso tras detener/reiniciar servidor aprobados. Presentación editable preparada con notas y revisión visual de sus diez diapositivas; no se afirma inspección en PowerPoint.
+
+Autorrevisión de entrega: configuración sin secreto funcional predeterminado; JSON de errores no devuelve input; modelos no salen directamente por API; notas internas filtradas en servidor; IDs inmutables fuera de entradas; transacciones y versión conservadas; archivos locales sensibles excluidos. Revisión del frontend por lectura y comprobación de sintaxis, no ejecución visual completa.
+
+Pendientes: PF-12 y pruebas visuales de responsive/teclado/texto malicioso (el navegador no recibió permiso para abrir el origen local 8001); GitHub/PR por falta de credencial utilizable sin interacción. No se eludió la denegación del navegador. No se creó remoto, PR, revisión externa ni despliegue ficticio.

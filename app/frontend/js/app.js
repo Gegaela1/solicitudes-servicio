@@ -18,16 +18,17 @@ async function api(path, method='GET', data) {
   if (!r.ok) {
     if(r.status===401 && token) { token=null; me=null; navigation(); loginPage(); }
     const text = Array.isArray(d.detail)?d.detail.map(e=>e.loc.slice(1).join('.')+': '+e.msg).join('\n'):d.detail;
-    throw new Error(text || 'No se pudo completar la operación');
+    const error=new Error(text || 'No se pudo completar la operación'); error.fields=Array.isArray(d.detail)?d.detail:[]; throw error;
   }
   return d;
 }
 async function run(action) { try { await action(); } catch(e) { message(e.name==='TimeoutError'?'Tiempo de espera agotado. Intenta nuevamente.':e.message,true); } }
 function button(text,action,parent=view) { const b=el('button',text,{type:'button'}); b.onclick=()=>run(async()=>{ b.disabled=true; try { await action(); } finally {b.disabled=false;} }); parent.append(b); return b; }
+let formCounter=0;
 function form(title,fields,submit,caption='Guardar') {
-  const f=el('form'); f.append(el('h2',title));
+  const formId=++formCounter; const f=el('form'); f.append(el('h2',title));
   for(const field of fields) {
-    const label=el('label',field.label); const id='f-'+field.name;
+    const label=el('label',field.label); const id='f-'+formId+'-'+field.name;
     label.htmlFor=id;
     const input=el(field.type==='textarea'?'textarea':field.options?'select':'input',null,{id,name:field.name});
     if(field.options) for(const [value,text] of field.options) {const o=el('option',text,{value}); input.append(o);}
@@ -41,7 +42,7 @@ function form(title,fields,submit,caption='Guardar') {
     f.append(label);
   }
   const b=el('button',caption,{type:'submit'}); f.append(b);
-  f.onsubmit=e=>{ e.preventDefault(); run(async()=>{ b.disabled=true; message('Procesando…'); try { await submit(Object.fromEntries(new FormData(f))); } finally {b.disabled=false;} }); };
+  f.onsubmit=e=>{ e.preventDefault(); run(async()=>{ b.disabled=true; message('Procesando…'); try { for(const n of f.querySelectorAll('.field-error'))n.textContent=''; for(const n of f.querySelectorAll('[aria-invalid]'))n.removeAttribute('aria-invalid'); await submit(Object.fromEntries(new FormData(f))); } catch(error) { let first=null; for(const item of error.fields||[]){const name=item.loc?.[1]; const input=f.elements.namedItem(name); if(input){input.setAttribute('aria-invalid','true'); const span=f.querySelector('#'+input.id+'-error');if(span)span.textContent=item.msg;first=first||input;}} if(first)first.focus(); throw error; } finally {b.disabled=false;} }); };
   view.append(f); return f;
 }
 function clear(title) {view.replaceChildren(); if(title) view.append(el('h1',title)); message('');}
@@ -56,7 +57,7 @@ function navigation() {
 function loginPage() {
   clear('Acceso');
   form('Iniciar sesión',[{name:'correo',label:'Correo',type:'email'},{name:'contrasena',label:'Contraseña',type:'password',max:128}],async d=>{
-    const r=await api('/auth/token','POST',d); token=r.access_token; me=await api('/usuarios/me'); navigation(); clear('Bienvenida, '+me.nombre); message('Sesión iniciada.');
+    const r=await api('/auth/token','POST',d); token=r.access_token; me=await api('/usuarios/me'); navigation(); if(has('coordinacion')||has('atencion')||has('solicitante'))await casesPage();else clear('Bienvenida, '+me.nombre); message('Sesión iniciada.');
   },'Entrar');
   if(typeof registerPage==='function') button('Crear cuenta solicitante',registerPage);
 }
@@ -85,7 +86,7 @@ async function historyBlock(c,page=1){const data=await api('/solicitudes/'+c.id+
 detailWidgets.push(async c=>{await historyBlock(c);if((has('coordinacion')||((has('atencion'))&&c.responsable_id===me.id))&&['registrada','en_revision','pendiente_informacion','aceptada','asignada','en_atencion'].includes(c.estado)){form('Añadir intervención',[{name:'detalle',label:'Detalle',type:'textarea',max:5000},{name:'interna',label:'Visibilidad',options:[['true','Interna'],['false','Visible al solicitante']]},{name:'rectifica_id',label:'ID de nota a rectificar (opcional)',type:'number',required:false}],async d=>{d.interna=d.interna==='true';d.rectifica_id=d.rectifica_id?Number(d.rectifica_id):null;await api('/solicitudes/'+c.id+'/intervenciones','POST',{...d,version:c.version});await caseDetail(c.id);message('Intervención registrada.');});}});
 async function caseAction(c,action,data={}){await api('/solicitudes/'+c.id+'/'+action,'POST',{version:c.version,...data});await caseDetail(c.id);message('Acción registrada.');}
 detailWidgets.push(async c=>{if(has('atencion')||has('coordinacion')){if(c.estado==='registrada')button('Iniciar revisión',()=>caseAction(c,'revision'));if(c.estado==='en_revision'){button('Aceptar solicitud',()=>caseAction(c,'aceptacion'));form('Rechazar por improcedencia',[{name:'motivo',label:'Motivo del rechazo',type:'textarea',min:10,max:2000}],async d=>{if(confirm('¿Rechazar esta solicitud?'))await caseAction(c,'rechazo',d);},'Rechazar');}}});
-detailWidgets.push(async c=>{if(has('coordinacion')&&(['aceptada'].includes(c.estado)||(c.responsable_id&&['registrada','en_revision','pendiente_informacion','asignada','en_atencion'].includes(c.estado)))){const data=await api('/usuarios?size=100');form(c.responsable_id?'Reasignar responsable':'Asignar responsable',[{name:'responsable_id',label:'Responsable activo',options:data.items.filter(u=>u.activo&&u.roles.some(r=>['atencion','coordinacion'].includes(r))).map(u=>[u.id,u.nombre+' ('+u.correo+')'])},{name:'motivo',label:'Motivo',min:10,max:2000,type:'textarea'}],async d=>{d.responsable_id=Number(d.responsable_id);await api('/solicitudes/'+c.id+'/responsable','PUT',{...d,version:c.version});await caseDetail(c.id);message('Responsable actualizado.');});}});
+detailWidgets.push(async c=>{if(has('coordinacion')&&(['aceptada'].includes(c.estado)||(c.responsable_id&&['registrada','en_revision','pendiente_informacion','asignada','en_atencion'].includes(c.estado)))){const data=await allStaff();form(c.responsable_id?'Reasignar responsable':'Asignar responsable',[{name:'responsable_id',label:'Responsable activo',options:data.items.filter(u=>u.activo&&u.roles.some(r=>['atencion','coordinacion'].includes(r))).map(u=>[u.id,u.nombre+' ('+u.correo+')'])},{name:'motivo',label:'Motivo',min:10,max:2000,type:'textarea'}],async d=>{d.responsable_id=Number(d.responsable_id);await api('/solicitudes/'+c.id+'/responsable','PUT',{...d,version:c.version});await caseDetail(c.id);message('Responsable actualizado.');});}});
 detailWidgets.push(async c=>{if((has('atencion')||has('coordinacion'))&&c.responsable_id===me.id){if(c.estado==='asignada')button('Iniciar atención',()=>caseAction(c,'inicio-atencion'));if(c.estado==='en_atencion')form('Finalizar atención',[{name:'respuesta',label:'Respuesta al solicitante',type:'textarea',min:10,max:5000},{name:'resultado',label:'Resultado de lo realizado',type:'textarea',min:5,max:2000}],async d=>{if(confirm('¿Finalizar este caso con la respuesta indicada?'))await caseAction(c,'finalizacion',d);},'Finalizar');}});
 detailWidgets.push(async c=>{if(c.estado==='finalizada'){const r=await api('/solicitudes/'+c.id+'/resultado');view.append(el('h2','Respuesta y finalización'),el('p',r.respuesta,{class:'text'}),el('p','Resultado: '+r.resultado,{class:'text'}),el('p','Finalizada: '+colombia(r.finalizada_en)));}});
 detailWidgets.push(async c=>{if((c.estado==='en_revision'&&(has('atencion')||has('coordinacion')))||(c.estado==='en_atencion'&&c.responsable_id===me.id&&(has('atencion')||has('coordinacion')))){form('Pedir información adicional',[{name:'pregunta',label:'Pregunta (sin adjuntos)',type:'textarea',min:10,max:2000}],d=>caseAction(c,'requerimientos',d),'Solicitar información');}const data=await api('/solicitudes/'+c.id+'/requerimientos');if(data.items.length)view.append(el('h2','Requerimientos de información'));for(const r of data.items){view.append(el('p',r.pregunta,{class:'text'}),el('p',r.respuesta||'Sin respuesta',{class:'text'}));if(!r.cerrado_en&&c.solicitante_id===me.id&&c.estado==='pendiente_informacion')form('Responder requerimiento',[{name:'respuesta',label:'Respuesta (solo texto)',type:'textarea',min:1,max:5000}],async d=>{await api('/requerimientos/'+r.id+'/respuesta','POST',{...d,version:c.version});await caseDetail(c.id);message('Información enviada.');},'Enviar información');}});
@@ -99,3 +100,5 @@ async function reportPage(page=1){clear('Consolidado de coordinación');form('Fi
 pages['Consolidado']={allow:()=>has('coordinacion'),show:reportPage};
 async function noticesPage(page=1){clear('Notificaciones internas');const data=await api('/notificaciones?page='+page);if(!data.items.length)view.append(el('p','No tienes notificaciones.'));for(const n of data.items){const a=el('article');a.append(el('p',n.mensaje),el('small',colombia(n.creada_en)+' · '+(n.leida_en?'Leída':'Sin leer')));button('Abrir caso',()=>caseDetail(n.solicitud_id),a);if(!n.leida_en)button('Marcar leída',async()=>{await api('/notificaciones/'+n.id+'/lectura','PATCH');await noticesPage(page);},a);view.append(a);}pagination(data,noticesPage);}
 pages['Notificaciones']={allow:()=>true,show:noticesPage};
+
+async function allStaff(){const items=[];let page=1;while(true){const d=await api("/usuarios?size=100&page="+page);items.push(...d.items);if(page*100>=d.total)break;page++;}return {items};}

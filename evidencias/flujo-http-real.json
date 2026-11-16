@@ -1,0 +1,397 @@
+{
+  "nota": "Datos ficticios; sin tokens ni contraseñas; ejecución HTTP real, no navegador.",
+  "pasos": [
+    {
+      "metodo": "GET",
+      "ruta": "/servicios",
+      "http": 200,
+      "respuesta": [
+        {
+          "id": 1,
+          "nombre": "Expedición de certificados",
+          "activo": true,
+          "prioridad": "normal",
+          "plazo_horas": null
+        },
+        {
+          "id": 2,
+          "nombre": "Actualización de información",
+          "activo": true,
+          "prioridad": "normal",
+          "plazo_horas": null
+        },
+        {
+          "id": 3,
+          "nombre": "Solicitudes de documentos",
+          "activo": true,
+          "prioridad": "normal",
+          "plazo_horas": null
+        },
+        {
+          "id": 4,
+          "nombre": "Consultas sobre trámites",
+          "activo": true,
+          "prioridad": "normal",
+          "plazo_horas": null
+        },
+        {
+          "id": 5,
+          "nombre": "Peticiones generales",
+          "activo": true,
+          "prioridad": "normal",
+          "plazo_horas": null
+        }
+      ]
+    },
+    {
+      "metodo": "GET",
+      "ruta": "/usuarios?size=100",
+      "http": 200,
+      "respuesta": {
+        "items": [
+          {
+            "id": 1,
+            "nombre": "Demo solicitante",
+            "documento": "DEMO-solicitante",
+            "correo": "demo.solicitante@example.com",
+            "activo": true,
+            "roles": [
+              "solicitante"
+            ]
+          },
+          {
+            "id": 2,
+            "nombre": "Demo atencion",
+            "documento": "DEMO-atencion",
+            "correo": "demo.atencion@example.com",
+            "activo": true,
+            "roles": [
+              "atencion"
+            ]
+          },
+          {
+            "id": 3,
+            "nombre": "Demo coordinacion",
+            "documento": "DEMO-coordinacion",
+            "correo": "demo.coordinacion@example.com",
+            "activo": true,
+            "roles": [
+              "coordinacion"
+            ]
+          }
+        ],
+        "total": 3,
+        "page": 1,
+        "size": 100
+      }
+    },
+    {
+      "metodo": "POST",
+      "ruta": "/solicitudes",
+      "http": 201,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": null,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "registrada",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 2,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.557149Z",
+        "revision_iniciada_en": null,
+        "atencion_iniciada_en": null,
+        "finalizada_en": null,
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 5.248611111111111e-06,
+        "duracion_ciclo_horas": 5.248611111111111e-06
+      }
+    },
+    {
+      "metodo": "POST",
+      "ruta": "/solicitudes/1/revision",
+      "http": 200,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": null,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "en_revision",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 3,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.591038Z",
+        "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+        "atencion_iniciada_en": null,
+        "finalizada_en": null,
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 1.3023888888888889e-05,
+        "duracion_ciclo_horas": 1.3023888888888889e-05
+      }
+    },
+    {
+      "metodo": "POST",
+      "ruta": "/solicitudes/1/aceptacion",
+      "http": 200,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": null,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "aceptada",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 4,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.607976Z",
+        "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+        "atencion_iniciada_en": null,
+        "finalizada_en": null,
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 1.8628055555555553e-05,
+        "duracion_ciclo_horas": 1.8628055555555553e-05
+      }
+    },
+    {
+      "metodo": "PUT",
+      "ruta": "/solicitudes/1/responsable",
+      "http": 200,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": 2,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "asignada",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 6,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.634147Z",
+        "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+        "atencion_iniciada_en": null,
+        "finalizada_en": null,
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 2.606722222222222e-05,
+        "duracion_ciclo_horas": 2.606722222222222e-05
+      }
+    },
+    {
+      "metodo": "POST",
+      "ruta": "/solicitudes/1/inicio-atencion",
+      "http": 200,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": 2,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "en_atencion",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 7,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.655486Z",
+        "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+        "atencion_iniciada_en": "2026-11-16T23:31:17.655359Z",
+        "finalizada_en": null,
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 3.121777777777778e-05,
+        "duracion_ciclo_horas": 3.121777777777778e-05
+      }
+    },
+    {
+      "metodo": "POST",
+      "ruta": "/solicitudes/1/finalizacion",
+      "http": 200,
+      "respuesta": {
+        "id": 1,
+        "radicado": "SOL-2026-00000001",
+        "solicitante_id": 1,
+        "servicio_id": 1,
+        "responsable_id": 2,
+        "nombre": "Demo Solicitante",
+        "documento": "DEMO-001",
+        "correo": "demo.solicitante@example.com",
+        "asunto": "Solicitud para demostración integral",
+        "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+        "estado": "finalizada",
+        "prioridad": "normal",
+        "plazo_horas": null,
+        "version": 9,
+        "creada_en": "2026-11-16T23:31:17.554030Z",
+        "actualizada_en": "2026-11-16T23:31:17.676407Z",
+        "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+        "atencion_iniciada_en": "2026-11-16T23:31:17.655359Z",
+        "finalizada_en": "2026-11-16T23:31:17.673355Z",
+        "vencimiento": null,
+        "vencida": false,
+        "duracion_total_horas": 3.314583333333333e-05,
+        "duracion_ciclo_horas": 3.314583333333333e-05
+      }
+    },
+    {
+      "metodo": "GET",
+      "ruta": "/solicitudes/1/resultado",
+      "http": 200,
+      "respuesta": {
+        "radicado": "SOL-2026-00000001",
+        "respuesta": "Se proporcionó orientación sobre el procedimiento solicitado.",
+        "resultado": "Orientación administrativa completada",
+        "finalizada_en": "2026-11-16T23:31:17.673355Z"
+      }
+    },
+    {
+      "metodo": "GET",
+      "ruta": "/solicitudes/1/historial",
+      "http": 200,
+      "respuesta": {
+        "items": [
+          {
+            "id": 7,
+            "tipo": "finalizacion",
+            "detalle": "Se proporcionó orientación sobre el procedimiento solicitado.\nResultado: Orientación administrativa completada",
+            "creada_en": "2026-11-16T23:31:17.677658Z",
+            "estado_anterior": "en_atencion",
+            "estado_nuevo": "finalizada",
+            "rectifica_id": null
+          },
+          {
+            "id": 6,
+            "tipo": "inicio_atencion",
+            "detalle": "Atención iniciada",
+            "creada_en": "2026-11-16T23:31:17.656117Z",
+            "estado_anterior": "asignada",
+            "estado_nuevo": "en_atencion",
+            "rectifica_id": null
+          },
+          {
+            "id": 5,
+            "tipo": "estado",
+            "detalle": "Responsable asignado; solicitud asignada",
+            "creada_en": "2026-11-16T23:31:17.634716Z",
+            "estado_anterior": "aceptada",
+            "estado_nuevo": "asignada",
+            "rectifica_id": null
+          },
+          {
+            "id": 3,
+            "tipo": "aceptacion",
+            "detalle": "Solicitud aceptada",
+            "creada_en": "2026-11-16T23:31:17.608617Z",
+            "estado_anterior": "en_revision",
+            "estado_nuevo": "aceptada",
+            "rectifica_id": null
+          },
+          {
+            "id": 2,
+            "tipo": "revision",
+            "detalle": "Revisión iniciada",
+            "creada_en": "2026-11-16T23:31:17.591733Z",
+            "estado_anterior": "registrada",
+            "estado_nuevo": "en_revision",
+            "rectifica_id": null
+          },
+          {
+            "id": 1,
+            "tipo": "registro",
+            "detalle": "Solicitud registrada",
+            "creada_en": "2026-11-16T23:31:17.559574Z",
+            "estado_anterior": null,
+            "estado_nuevo": "registrada",
+            "rectifica_id": null
+          }
+        ],
+        "total": 6,
+        "page": 1,
+        "size": 20
+      }
+    },
+    {
+      "metodo": "GET",
+      "ruta": "/reportes/solicitudes",
+      "http": 200,
+      "respuesta": {
+        "items": [
+          {
+            "id": 1,
+            "radicado": "SOL-2026-00000001",
+            "solicitante_id": 1,
+            "servicio_id": 1,
+            "responsable_id": 2,
+            "nombre": "Demo Solicitante",
+            "documento": "DEMO-001",
+            "correo": "demo.solicitante@example.com",
+            "asunto": "Solicitud para demostración integral",
+            "descripcion": "Necesito orientación administrativa sobre el procedimiento de expedición.",
+            "estado": "finalizada",
+            "prioridad": "normal",
+            "plazo_horas": null,
+            "version": 9,
+            "creada_en": "2026-11-16T23:31:17.554030Z",
+            "actualizada_en": "2026-11-16T23:31:17.676407Z",
+            "revision_iniciada_en": "2026-11-16T23:31:17.590941Z",
+            "atencion_iniciada_en": "2026-11-16T23:31:17.655359Z",
+            "finalizada_en": "2026-11-16T23:31:17.673355Z",
+            "vencimiento": null,
+            "vencida": false,
+            "duracion_total_horas": 3.314583333333333e-05,
+            "duracion_ciclo_horas": 3.314583333333333e-05
+          }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 20,
+        "conteos": {
+          "estado": {
+            "finalizada": 1
+          },
+          "servicio_id": {
+            "1": 1
+          },
+          "prioridad": {
+            "normal": 1
+          }
+        },
+        "pendientes_activos": 0,
+        "vencidas": 0,
+        "promedio_resolucion_horas": 3.3058226108551025e-05
+      }
+    }
+  ]
+}

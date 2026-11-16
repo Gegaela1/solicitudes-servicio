@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = Field(default=30, ge=1, le=1440)
     app_env: str = "development"
 
+    @field_validator("database_url")
+    @classmethod
+    def sqlite_url(cls, value):
+        if not value.startswith("sqlite:///"):
+            raise ValueError("Esta versión requiere una base SQLite local")
+        return value
+
     @field_validator("secret_key")
     @classmethod
     def strong_key(cls, value):

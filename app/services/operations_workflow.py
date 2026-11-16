@@ -1,0 +1,176 @@
+from sqlalchemy import select, text
+from app.models.entities import Solicitud, Requerimiento
+from app.schemas.cases import Duplicate
+from app.services.permissions import owner
+from app.services.permissions import responsible
+from app.schemas.cases import Finalize
+from fastapi import HTTPException
+from app.models.entities import Usuario
+from app.api.deps import roles
+from app.services.cases import ACTIVE
+from app.schemas.cases import Assign
+from sqlalchemy.orm import Session
+from app.db.session import utcnow
+from app.schemas.cases import Action, Motive
+from app.services.cases import case_by_id, state, event, case_output, current_cycle
+from app.services.permissions import require_roles
+
+
+def transition(db, case, user, new, kind, detail):
+    before = case.estado
+    case.estado = new
+    event(db, case, user, kind, detail, before=before)
+
+
+def review(sid: int, data: Action, user=None, db: Session = None):
+    require_roles(user, "atencion", "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, "registrada")
+    case.revision_iniciada_en = utcnow()
+    transition(db, case, user, "en_revision", "revision", "Revisión iniciada")
+    db.commit()
+    return case_output(db, case)
+
+
+def accept(sid: int, data: Action, user=None, db: Session = None):
+    require_roles(user, "atencion", "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, "en_revision")
+    transition(db, case, user, "aceptada", "aceptacion", "Solicitud aceptada")
+    db.commit()
+    return case_output(db, case)
+
+
+def reject(sid: int, data: Motive, user=None, db: Session = None):
+    require_roles(user, "atencion", "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, "en_revision")
+    current_cycle(db, case).fin = utcnow()
+    transition(db, case, user, "rechazada", "rechazo", data.motivo)
+    db.commit()
+    return case_output(db, case)
+
+
+def assign(sid: int, data: Assign, user=None, db: Session = None):
+    db.execute(text("BEGIN IMMEDIATE"))
+    require_roles(user, "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, *ACTIVE)
+    if not case.responsable_id:
+        state(case, "aceptada")
+    target = db.get(Usuario, data.responsable_id)
+    if (
+        not target
+        or not target.activo
+        or (not roles(target).intersection({"atencion", "coordinacion"}))
+    ):
+        raise HTTPException(422, "Responsable no elegible")
+    if case.responsable_id == target.id:
+        raise HTTPException(409, "La persona ya es responsable")
+    previous = case.responsable_id
+    before = case.estado
+    case.responsable_id = target.id
+    if previous is None:
+        case.estado = "asignada"
+    event(
+        db,
+        case,
+        user,
+        "asignacion",
+        data.motivo,
+        internal=True,
+        before=before,
+        changes={"responsable_anterior": previous, "responsable_nuevo": target.id},
+    )
+    if before != case.estado:
+        event(db, case, user, "estado", "Responsable asignado; solicitud asignada", before=before)
+    db.commit()
+    return case_output(db, case)
+
+
+def start(sid: int, data: Action, user=None, db: Session = None):
+    case = case_by_id(db, user, sid, data.version)
+    responsible(user, case)
+    state(case, "asignada")
+    case.atencion_iniciada_en = utcnow()
+    transition(db, case, user, "en_atencion", "inicio_atencion", "Atención iniciada")
+    db.commit()
+    return case_output(db, case)
+
+
+def finish(sid: int, data: Finalize, user=None, db: Session = None):
+    case = case_by_id(db, user, sid, data.version)
+    responsible(user, case)
+    state(case, "en_atencion")
+    case.respuesta_final = data.respuesta
+    case.resultado_final = data.resultado
+    case.finalizada_en = utcnow()
+    cycle = current_cycle(db, case)
+    cycle.fin = case.finalizada_en
+    cycle.respuesta = data.respuesta
+    cycle.resultado = data.resultado
+    cycle.resuelto = True
+    transition(
+        db,
+        case,
+        user,
+        "finalizada",
+        "finalizacion",
+        data.respuesta + "\nResultado: " + data.resultado,
+    )
+    db.commit()
+    return case_output(db, case)
+
+
+def cancel(sid: int, data: Motive, user=None, db: Session = None):
+    case = case_by_id(db, user, sid, data.version)
+    owner(user, case)
+    state(case, "registrada")
+    current_cycle(db, case).fin = utcnow()
+    transition(db, case, user, "cancelada", "cancelacion", data.motivo)
+    db.commit()
+    return case_output(db, case)
+
+
+def duplicate(sid: int, data: Duplicate, user=None, db: Session = None):
+    db.execute(text("BEGIN IMMEDIATE"))
+    require_roles(user, "coordinacion")
+    case = case_by_id(db, user, sid, data.version)
+    state(case, *ACTIVE)
+    original = db.get(Solicitud, data.original_id)
+    if (
+        not original
+        or original.id == sid
+        or original.estado == "cerrada_duplicidad"
+        or (original.solicitante_id != case.solicitante_id)
+    ):
+        raise HTTPException(
+            422, "Caso original inválido; debe ser distinto, del mismo propietario y no duplicado"
+        )
+    seen = {sid}
+    cursor = original
+    while cursor:
+        if cursor.id in seen:
+            raise HTTPException(409, "La vinculación generaría un ciclo")
+        seen.add(cursor.id)
+        cursor = db.get(Solicitud, cursor.original_id) if cursor.original_id else None
+    case.original_id = original.id
+    req = db.scalar(
+        select(Requerimiento).where(
+            Requerimiento.solicitud_id == sid, Requerimiento.cerrado_en.is_(None)
+        )
+    )
+    if req:
+        req.cerrado_en = utcnow()
+        req.motivo_cierre = data.motivo
+    current_cycle(db, case).fin = utcnow()
+    transition(
+        db,
+        case,
+        user,
+        "cerrada_duplicidad",
+        "duplicidad",
+        data.motivo + " · Caso original: " + original.radicado,
+    )
+    db.commit()
+    return case_output(db, case)

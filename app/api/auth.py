@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from app.services import operations_auth as operations
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.api.deps import current_user, public_user
-from app.core.security import DUMMY_HASH, password_hash, token_for, verify_password
+from app.api.deps import current_user
 from app.db.session import get_db
-from app.models.entities import Usuario, Rol
 from app.schemas.common import Login, PasswordChange, Registration
 
 router = APIRouter(prefix="/api/v1", tags=["Cuentas"])
@@ -12,39 +10,21 @@ router = APIRouter(prefix="/api/v1", tags=["Cuentas"])
 
 @router.post("/auth/token")
 def login(data: Login, db: Session = Depends(get_db)):
-    user = db.scalar(select(Usuario).where(Usuario.correo == str(data.correo)))
-    valid = verify_password(data.contrasena, user.hash_contrasena if user else DUMMY_HASH)
-    if not user or not user.activo or not valid:
-        raise HTTPException(401, "Credenciales inválidas")
-    return {"access_token": token_for(user), "token_type": "bearer"}
+    return operations.login(data=data, db=db)
 
 
 @router.get("/usuarios/me")
 def me(user=Depends(current_user)):
-    return public_user(user)
+    return operations.me(user=user)
 
 
 @router.post("/usuarios/me/contrasena")
 def change_password(
     data: PasswordChange, user=Depends(current_user), db: Session = Depends(get_db)
 ):
-    if not verify_password(data.actual, user.hash_contrasena):
-        raise HTTPException(401, "Credenciales inválidas")
-    user.hash_contrasena = password_hash.hash(data.nueva)
-    user.auth_version += 1
-    db.commit()
-    return {"mensaje": "Contraseña cambiada. Inicia sesión nuevamente."}
+    return operations.change_password(data=data, user=user, db=db)
 
 
 @router.post("/auth/registro", status_code=201)
 def register(data: Registration, db: Session = Depends(get_db)):
-    user = Usuario(
-        **data.model_dump(mode="json", exclude={"contrasena"}),
-        hash_contrasena=password_hash.hash(data.contrasena),
-        roles=[db.scalar(select(Rol).where(Rol.nombre == "solicitante"))],
-    )
-    if not user.roles[0]:
-        raise HTTPException(409, "Prepara primero el catálogo y los roles")
-    db.add(user)
-    db.commit()
-    return public_user(user)
+    return operations.register(data=data, db=db)
