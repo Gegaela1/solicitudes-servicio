@@ -68,3 +68,20 @@ def test_jwt_and_password(client):
         "/api/v1/auth/token", json={"correo": "no", "contrasena": "secreto-no-reflejar"}
     )
     assert invalid.status_code == 422 and "secreto-no-reflejar" not in invalid.text
+
+
+def test_register_no_privileges(client):
+    data = {
+        "nombre": "Persona Prueba",
+        "documento": "00123",
+        "correo": " MAYUS@example.com ",
+        "contrasena": "PruebaSegura-12345",
+    }
+    r = client.post("/api/v1/auth/registro", json=data)
+    assert r.status_code == 201, r.text
+    assert r.json()["roles"] == ["solicitante"]
+    assert r.json()["correo"] == "mayus@example.com"
+    assert "hash_contrasena" not in r.text
+    assert client.post("/api/v1/auth/registro", json=data).status_code == 409
+    data["roles"] = ["coordinacion"]
+    assert client.post("/api/v1/auth/registro", json=data).status_code == 422

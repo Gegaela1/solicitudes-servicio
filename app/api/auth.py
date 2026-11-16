@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from app.api.deps import current_user, public_user
 from app.core.security import DUMMY_HASH, password_hash, token_for, verify_password
 from app.db.session import get_db
-from app.models.entities import Usuario
-from app.schemas.common import Login, PasswordChange
+from app.models.entities import Usuario, Rol
+from app.schemas.common import Login, PasswordChange, Registration
 
 router = APIRouter(prefix="/api/v1", tags=["Cuentas"])
 
@@ -34,3 +34,17 @@ def change_password(
     user.auth_version += 1
     db.commit()
     return {"mensaje": "Contraseña cambiada. Inicia sesión nuevamente."}
+
+
+@router.post("/auth/registro", status_code=201)
+def register(data: Registration, db: Session = Depends(get_db)):
+    user = Usuario(
+        **data.model_dump(mode="json", exclude={"contrasena"}),
+        hash_contrasena=password_hash.hash(data.contrasena),
+        roles=[db.scalar(select(Rol).where(Rol.nombre == "solicitante"))],
+    )
+    if not user.roles[0]:
+        raise HTTPException(409, "Prepara primero el catálogo y los roles")
+    db.add(user)
+    db.commit()
+    return public_user(user)
