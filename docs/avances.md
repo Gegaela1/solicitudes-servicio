@@ -42,3 +42,5 @@ RF-16 — resolver reaperturas conservando radicado historial y ciclos previos. 
 RF-17 — cerrar duplicados manualmente sin perder historial ni exponer otros propietarios. Suite ejecutada con resultado aprobado (evidencias/RF-17.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
 
 RF-18 — configurar plazos por servicio sin alterar casos existentes. Suite ejecutada con resultado aprobado (evidencias/RF-18.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
+
+RF-07 — consultar consolidado con filtros coherentes y metricas por ciclo. Suite ejecutada con resultado aprobado (evidencias/RF-07.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.
