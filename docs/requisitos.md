@@ -234,3 +234,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-16 — resolver reaperturas conservando radicado historial y ciclos previos
 AC-RF-16-01: Una petición pendiente no cambia estado; aprobar conserva finalización previa y crea ciclo nuevo sin responsable ni respuesta vigente.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-17 — cerrar duplicados manualmente sin perder historial ni exponer otros propietarios
+AC-RF-17-01: Solo casos activos se vinculan a un original distinto del mismo propietario; se impiden ciclos y se cierran requerimientos pendientes.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

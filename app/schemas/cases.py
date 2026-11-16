@@ -82,3 +82,7 @@ class Correction(CaseCreate):
 
 class ReopenDecision(Motive):
     aprobar: bool
+
+
+class Duplicate(Motive):
+    original_id: int = Field(gt=0)
