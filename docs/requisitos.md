@@ -174,3 +174,7 @@ RN-13 Coordinación define prioridades y tiempos por trámite.
 Aclara cómo se combina un catálogo de servicios con el rechazo por servicio no procedente; no inventes una función de captura libre sin justificarla.
 
 Los criterios AC-RF-XX-YY se detallarán antes de implementar cada RF. El incremento 0 solo contribuye a RNF-03, RNF-05 y RNF-06; no satisface CA-01 a CA-06.
+
+### RF-08 — autenticacion JWT y cambio seguro de contrasena
+AC-RF-08-01: Credenciales válidas permiten acceso; JWT alterado o expirado falla; cambiar contraseña invalida el JWT previo.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

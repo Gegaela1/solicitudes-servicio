@@ -10,3 +10,5 @@
 | CA-06 | RF-07 | Pendiente | No existe | PF-10 pendiente |
 
 PF-11 (integridad) y PF-12 (integración con BD): pendientes. Incremento 0: app/main.py y app/frontend, verificaciones técnicas I0; no sustituyen escenarios PF.
+
+RF-08 : AC-RF-08-01; implementación y pruebas en el diff de la rama; evidencia evidencias/RF-08.xml. PR remoto pendiente por falta de acceso autenticado.

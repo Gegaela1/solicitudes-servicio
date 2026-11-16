@@ -8,3 +8,5 @@ Se conserva el incremento 0 como primer commit real. La nueva solicitud autoriza
 GitHub: gh no instalado. No se ha comprobado existencia privada ni autenticación; el acceso público consultado no devolvió una página verificable. No se inventa remoto. Continuar localmente.
 
 Base: migración aplicada, importación de dependencias y Argon2 verificados; pytest: 1 aprobada. Autorrevisión: sin secretos preparados, relaciones sin borrado en cascada y configuración falla sin clave. Integración local; PR remoto pendiente por acceso GitHub.
+
+RF-08 — autenticacion JWT y cambio seguro de contrasena. Suite ejecutada con resultado aprobado (evidencias/RF-08.xml). Autorrevisión: diff revisado, entradas explícitas, permisos de servidor, sin .env ni BD preparados. Integración local; no se simula PR remoto.

@@ -1,28 +1,60 @@
-"""Punto de entrada del incremento 0: interfaz y comprobación de salud."""
-
 from pathlib import Path
-from typing import Literal
-
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.orm.exc import StaleDataError
+from app.core.config import load_settings
+from app.api.auth import router as auth_router
 
+load_settings()
 FRONTEND = Path(__file__).resolve().parent / "frontend"
-app = FastAPI(title="Solicitudes de servicio", version="0.0.1")
+app = FastAPI(title="Solicitudes de servicio", version="1.0.0")
 app.mount("/static", StaticFiles(directory=FRONTEND), name="static")
+app.include_router(auth_router)
 
 
-class Salud(BaseModel):
-    estado: Literal["disponible"]
+@app.get("/api/v1/salud", tags=["Sistema"])
+def health():
+    return {"estado": "disponible"}
 
 
-@app.get("/api/v1/salud", response_model=Salud, tags=["Sistema"])
-def consultar_salud() -> Salud:
-    """Comprueba que la API responde; no verifica una base de datos."""
-    return Salud(estado="disponible")
-
-
-@app.get("/", response_class=FileResponse, include_in_schema=False)
-def inicio() -> FileResponse:
+@app.get("/", include_in_schema=False)
+def home():
     return FileResponse(FRONTEND / "index.html")
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error(request: Request, exc: RequestValidationError):
+    # No devolver input/context: pueden contener contraseñas y otros secretos.
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": [
+                {"loc": list(e["loc"]), "msg": e["msg"], "type": e["type"]} for e in exc.errors()
+            ]
+        },
+    )
+
+
+@app.exception_handler(IntegrityError)
+async def integrity_error(request: Request, exc: IntegrityError):
+    return JSONResponse(
+        status_code=409, content={"detail": "Conflicto de unicidad o integridad. Revisa los datos."}
+    )
+
+
+@app.exception_handler(StaleDataError)
+async def stale_error(request: Request, exc: StaleDataError):
+    return JSONResponse(
+        status_code=409, content={"detail": "El caso cambió. Recarga antes de continuar."}
+    )
+
+
+@app.exception_handler(OperationalError)
+async def operational_error(request: Request, exc: OperationalError):
+    return JSONResponse(
+        status_code=409,
+        content={"detail": "Operación temporalmente no disponible. Recarga e intenta nuevamente."},
+    )
