@@ -62,4 +62,3 @@ Supervisión:
 - Identifica pendientes y tiempos de atención.
 
 El cliente mencionó notificaciones sin definir el canal.
-
