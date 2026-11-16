@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import StaleDataError
+from app.api.users import router as users_router
 from app.core.config import load_settings
 from app.api.auth import router as auth_router
 
@@ -58,3 +59,6 @@ async def operational_error(request: Request, exc: OperationalError):
         status_code=409,
         content={"detail": "Operación temporalmente no disponible. Recarga e intenta nuevamente."},
     )
+
+
+app.include_router(users_router)
