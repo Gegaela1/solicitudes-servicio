@@ -242,3 +242,7 @@ Fuente: alcance autorizado por la estudiante; no aprobación del docente.
 ### RF-18 — configurar plazos por servicio sin alterar casos existentes
 AC-RF-18-01: Solo coordinación configura prioridad y plazo opcional 1–8760; los casos copian valores y calculan vencimiento por ciclo sin pausar esperas.
 Fuente: alcance autorizado por la estudiante; no aprobación del docente.
+
+### RF-07 — consultar consolidado con filtros coherentes y metricas por ciclo
+AC-RF-07-01: Coordinación combina filtros con fechas Colombia inclusivas; conteos listado y métricas coinciden; solo ciclos finalizados integran el promedio.
+Fuente: alcance autorizado por la estudiante; no aprobación del docente.

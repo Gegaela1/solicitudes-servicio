@@ -511,3 +511,21 @@ def test_service_snapshots_deadline(client):
         cycle = db.scalar(select(Ciclo).where(Ciclo.solicitud_id == c["id"]))
         cycle.inicio = utcnow() - timedelta(hours=25)
     assert client.get(f"/api/v1/solicitudes/{c['id']}", headers=h).json()["vencida"] is True
+
+
+def test_report_filtered_counts_and_dates(client):
+    from datetime import datetime
+
+    h, co, staff, c, cid, aid = finalized(client)
+    other = create_case(client, h)
+    with SessionLocal.begin() as db:
+        db.get(Solicitud, c["id"]).creada_en = datetime(2026, 11, 16, 5, 0)
+        db.get(Solicitud, other["id"]).creada_en = datetime(2026, 11, 17, 4, 59, 59)
+    assert client.get("/api/v1/reportes/solicitudes", headers=staff).status_code == 403
+    r = client.get("/api/v1/reportes/solicitudes?desde=2026-11-16&hasta=2026-11-16", headers=co)
+    assert r.status_code == 200, r.text
+    assert r.json()["total"] == 2 and r.json()["pendientes_activos"] == 1
+    assert r.json()["conteos"]["estado"] == {"finalizada": 1, "registrada": 1}
+    assert r.json()["promedio_resolucion_horas"] is not None
+    r = client.get("/api/v1/reportes/solicitudes?estado=registrada", headers=co)
+    assert r.json()["total"] == 1 and r.json()["promedio_resolucion_horas"] is None
