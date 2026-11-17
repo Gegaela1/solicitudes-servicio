@@ -1,3 +1,39 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Solicitudes de servicio</title><link rel="stylesheet" href="/static/css/estilos.css"><script src="/static/js/app.js" defer></script></head>
-<body><header><strong>Solicitudes de servicio</strong><nav id="nav" aria-label="Principal"></nav></header><main><div id="feedback" role="status" aria-live="polite"></div><section id="view"></section></main><footer>PF-01 · Gestión administrativa · <a href="/docs">API</a></footer></body></html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b43">
+  <title>Solicitudes de servicio</title>
+  <link rel="stylesheet" href="/static/css/estilos.css?v=2">
+  <script src="/static/js/app.js?v=2" defer></script>
+</head>
+<body data-session="guest">
+  <a class="skip-link" href="#view">Ir al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">s.</span><div><strong>Solicitudes</strong><span class="brand-caption">Portal de servicios</span></div></div>
+      <div id="account" class="account" aria-live="polite"></div>
+      <nav id="nav" aria-label="Principal"></nav>
+    </div>
+  </header>
+  <main>
+    <aside class="welcome" aria-label="Bienvenida">
+      <p class="eyebrow"><span aria-hidden="true"></span> Tu atención, más cerca</p>
+      <h1>Tus solicitudes.<br><em>Todo en un lugar.</em></h1>
+      <p class="welcome-copy">Presenta una solicitud, sigue cada avance y consulta tu respuesta cuando la necesites.</p>
+      <ol class="welcome-steps">
+        <li><span class="step-number">01</span><div><strong>Cuéntanos qué necesitas</strong><p>Selecciona el servicio y registra tu solicitud.</p></div></li>
+        <li><span class="step-number">02</span><div><strong>Acompaña el proceso</strong><p>Consulta el estado y responde las preguntas del equipo.</p></div></li>
+        <li><span class="step-number">03</span><div><strong>Encuentra tu respuesta</strong><p>Conserva el resultado y el historial de tu atención.</p></div></li>
+      </ol>
+      <p class="welcome-note">Información organizada. Atención con seguimiento.</p>
+    </aside>
+    <div class="workspace">
+      <div id="feedback" role="status" aria-live="polite"></div>
+      <section id="view" tabindex="-1"></section>
+    </div>
+  </main>
+  <footer><span>Solicitudes de servicio</span><span>PF-01 <span aria-hidden="true">·</span> <a href="/docs">Documentación API</a></span></footer>
+</body>
+</html>

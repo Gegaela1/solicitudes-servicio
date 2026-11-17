@@ -54,3 +54,9 @@ RF-01 a RF-19 implementados en 19 ramas reales. Refactor de entrega: rutas como 
 Autorrevisión de entrega: configuración sin secreto funcional predeterminado; JSON de errores no devuelve input; modelos no salen directamente por API; notas internas filtradas en servidor; IDs inmutables fuera de entradas; transacciones y versión conservadas; archivos locales sensibles excluidos. Revisión del frontend por lectura y comprobación de sintaxis, no ejecución visual completa.
 
 Pendientes: PF-12 y pruebas visuales de responsive/teclado/texto malicioso (el navegador no recibió permiso para abrir el origen local 8001); GitHub/PR por falta de credencial utilizable sin interacción. No se eludió la denegación del navegador. No se creó remoto, PR, revisión externa ni despliegue ficticio.
+
+## Mejora visual del frontend
+
+Se renovaron acceso/registro, cabecera con identidad y roles, navegación activa, formularios, tabla, estados coloreados y filtros en cuadrícula. Paleta azul petróleo/verde, recursos locales sin fuentes externas, tamaños adaptables y foco visible. CSS y JavaScript con versión de caché v2. Se mantienen rutas y permisos del servidor. Cerrar sesión también limpia los filtros de la cuenta anterior.
+
+Comprobación: sintaxis JavaScript correcta; HTML con identificadores únicos y anclajes conservados; diff revisado. No se declara inspección visual de navegador: sigue pendiente. Para ver el cambio, recargar con Ctrl+F5 en http://127.0.0.1:8001/. No hace falta reinstalar dependencias ni migrar BD.
