@@ -26,7 +26,7 @@ async function run(action) { try { await action(); } catch(e) { message(e.name==
 function button(text,action,parent=view) { const b=el('button',text,{type:'button'}); b.onclick=()=>run(async()=>{ b.disabled=true; try { await action(); } finally {b.disabled=false;} }); parent.append(b); return b; }
 let formCounter=0;
 function form(title,fields,submit,caption='Guardar') {
-  const formId=++formCounter; const f=el('form'); f.append(el('h2',title));
+  const formId=++formCounter; const f=el('form'); if(title==='Filtros'||title==='Filtros combinables') f.className='filter-form'; f.append(el('h2',title));
   for(const field of fields) {
     const label=el('label',field.label); const id='f-'+formId+'-'+field.name;
     label.htmlFor=id;
@@ -49,8 +49,11 @@ function clear(title) {view.replaceChildren(); if(title) view.append(el('h1',tit
 function has(role) {return me?.roles.includes(role);}
 function navigation() {
   nav.replaceChildren();
-  if(!me) return;
-  for(const [name,page] of Object.entries(pages)) if(page.allow()) button(name,page.show,nav);
+  document.body.dataset.session=me?'authenticated':'guest';
+  const account=document.querySelector('#account');account.replaceChildren();
+  if(!me) {listFilters={};return;}
+  account.append(document.createTextNode(me.nombre),el('small',me.roles.join(' · ')));
+  for(const [name,page] of Object.entries(pages)) if(page.allow()) {const item=button(name,async()=>{for(const n of nav.querySelectorAll('[aria-current]'))n.removeAttribute('aria-current');item.setAttribute('aria-current','page');await page.show();},nav);}
   button('Contraseña',passwordPage,nav);
   button('Salir',()=>{token=null;me=null;navigation();loginPage();},nav);
 }
@@ -79,7 +82,7 @@ function colombia(value){return value?new Intl.DateTimeFormat('es-CO',{dateStyle
 function filterFields(){return [{name:'estado',label:'Estado',options:[['','Todos'],...stateNames.map(x=>[x,x])],required:false},{name:'responsable_id',label:'ID responsable',type:'number',required:false},{name:'servicio_id',label:'ID servicio',type:'number',required:false},{name:'prioridad',label:'Prioridad',options:[['','Todas'],['baja','Baja'],['normal','Normal'],['alta','Alta']],required:false},{name:'desde',label:'Registro desde (Colombia)',type:'date',required:false},{name:'hasta',label:'Registro hasta (inclusive)',type:'date',required:false},{name:'radicado',label:'Radicado',required:false}].map(f=>({...f,value:listFilters[f.name]||''}));}
 function queryFilters(data){return Object.fromEntries(Object.entries(data).filter(([k,v])=>v!==''&&v!==null));}
 async function casesPage(page=1){clear(has('atencion')||has('coordinacion')?'Bandeja de solicitudes':'Mis solicitudes');form('Filtros',filterFields(),async d=>{listFilters=queryFilters(d);await casesPage();},'Filtrar');message('Cargando…');const data=await api('/solicitudes?'+new URLSearchParams({...listFilters,page}));message('');caseTable(data.items);pagination(data,casesPage);}
-function caseTable(items){if(!items.length){view.append(el('p','No hay solicitudes con estos filtros.'));return;}const table=el('table');const tr=el('tr');for(const t of ['Radicado','Asunto','Estado','Prioridad','Acción'])tr.append(el('th',t,{scope:'col'}));table.append(tr);for(const c of items){const row=el('tr');for(const t of [c.radicado,c.asunto,c.estado,c.prioridad])row.append(el('td',t));const td=el('td');button('Ver detalle',()=>caseDetail(c.id),td);row.append(td);table.append(row);}view.append(table);}
+function caseTable(items){if(!items.length){view.append(el('p','No hay solicitudes con estos filtros.'));return;}const table=el('table');const tr=el('tr');for(const t of ['Radicado','Asunto','Estado','Prioridad','Acción'])tr.append(el('th',t,{scope:'col'}));table.append(tr);for(const c of items){const row=el('tr');for(const t of [c.radicado,c.asunto])row.append(el('td',t));const stateCell=el('td');stateCell.append(el('span',c.estado.replaceAll('_',' '),{class:'status','data-state':c.estado}));row.append(stateCell,el('td',c.prioridad));const td=el('td');button('Ver detalle',()=>caseDetail(c.id),td);row.append(td);table.append(row);}view.append(table);}
 async function caseDetail(id){clear('Detalle de solicitud');message('Cargando…');const c=await api('/solicitudes/'+id);message('');view.append(el('h2',c.radicado));for(const [label,value] of [['Asunto',c.asunto],['Estado',c.estado],['Nombre presentado',c.nombre],['Documento',c.documento],['Correo presentado',c.correo],['Servicio (ID)',c.servicio_id],['Responsable (ID)',c.responsable_id||'Sin asignar'],['Descripción',c.descripcion],['Prioridad',c.prioridad],['Registro',colombia(c.creada_en)],['Vencimiento',colombia(c.vencimiento)],['Vencida',c.vencida?'Sí':'No'],['Duración total (horas)',c.duracion_total_horas.toFixed(2)],['Duración ciclo vigente (horas)',c.duracion_ciclo_horas?.toFixed(2)]]){const p=el('p',null,{class:'text'});p.append(el('strong',label+': '),document.createTextNode(String(value??'Sin datos')));view.append(p);}for(const widget of detailWidgets)await widget(c);button('Volver a la bandeja',casesPage);}
 pages['Solicitudes']={allow:()=>true,show:casesPage};
 async function historyBlock(c,page=1){const data=await api('/solicitudes/'+c.id+'/historial?page='+page);view.append(el('h2','Historial'));for(const i of data.items){const a=el('article');a.append(el('strong',colombia(i.creada_en)+' · '+i.tipo+(i.interna?' · Interna':'')),el('p',i.detalle,{class:'text'}));if(i.rectifica_id)a.append(el('small','Rectifica intervención '+i.rectifica_id));view.append(a);}if(!data.items.length)view.append(el('p','Sin intervenciones visibles.'));if(data.page*data.size<data.total)button('Más historial',()=>historyBlock(c,page+1));}
